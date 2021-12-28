@@ -1,1 +1,1 @@
-# doc-box
+# <img src="doc/doc-box.png" width="220" height="80">
