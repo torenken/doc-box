@@ -11,7 +11,7 @@ ALL_LAMBDAS = \
 .DEFAULT_GOAL := all
 
 .PHONY: all
-all: build
+all: goimpi golint gotest build
 
 .PHONY: clean
 clean:
