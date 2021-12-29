@@ -1,0 +1,50 @@
+#golang tools
+
+# Name of Package (see go.mod)
+MODULE := github.com/torenken/doc-box
+
+ALL_SRC_DIRS := $(shell go list -f {{.Dir}} ./...)
+
+# go commands
+GO_TEST := go test
+GO_LIST := go list
+GO_MOD := go mod
+
+# external-tools
+GO_FMT := gofmt
+GO_IMPORTS := goimports
+IMPI := impi
+LINT := golangci-lint
+
+.DEFAULT_GOAL := common
+
+.PHONY: common
+common: goimpi golint
+
+.PHONY: goimpi
+goimpi:
+	@echo "running $(IMPI) and verifying golang import directives"
+	$(IMPI) --local $(MODULE) --scheme stdThirdPartyLocal $(ALL_SRC_DIRS)
+
+.PHONY: gofmt
+gofmt:
+	$(GO_FMT) -w -s $(ALL_SRC_DIRS)
+	$(GO_IMPORTS) -v -w  -local $(MODULE) $(ALL_SRC_DIRS)
+
+.PHONY: golint
+golint:
+	@echo "running $(LINT) in `pwd`"
+	$(LINT) run --verbose --allow-parallel-runners
+
+.PHONY: golist-updates
+golist-updates:
+	$(GO_LIST) -u -f '{{if (and (not (or .Main .Indirect)) .Update)}}{{.Path}}: {{.Version}} -> {{.Update.Version}}{{end}}' -m all 2> /dev/null
+
+.PHONY: gotidy
+gotidy:
+	@rm -fr go.sum
+	$(GO_MOD) tidy
+
+.PHONY: gotest
+gotest:
+	$(GO_TEST) -v ./...
