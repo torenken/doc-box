@@ -1,0 +1,4 @@
+generatorName: asciidoc
+inputSpec: doc-box.yaml
+specDir: ./
+snippetDir: ./

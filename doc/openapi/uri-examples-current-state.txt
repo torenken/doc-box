@@ -1,0 +1,13 @@
+
+POST (application/json)
+/documentManagement/document (see Document Resource from TMF667)
+
+id: String
+href: String
+*type: string
+lifecycleState: String
+*name: String
+creationDate: DateTime
+
+POST (application/pdf)
+/documentManagement/document/{id}/attachment

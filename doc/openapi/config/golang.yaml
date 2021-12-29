@@ -1,0 +1,6 @@
+generatorName: go
+outputDir: tmf
+inputSpec: doc-box.yaml
+additionalProperties:
+  packageName: tmf
+# --global-property models,modelDocs=false is not supported in this config
