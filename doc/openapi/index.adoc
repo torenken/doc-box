@@ -1,0 +1,289 @@
+= Doc Box API
+team@openapitools.org
+0.0.1
+:toc: left
+:numbered:
+:toclevels: 3
+:source-highlighter: highlightjs
+:keywords: openapi, rest, Doc Box API
+:specDir: ./
+:snippetDir: ./
+:generator-template: v1 2019-12-20
+:info-url: https://openapi-generator.tech
+:app-name: Doc Box API
+
+[abstract]
+.Abstract
+<- The intent of this API is to provide a consistent/standardized mechanism to create new documents, delete existing documents, retrieving information about uploaded documents. This Specification is based on TMF667 - Document Management Release 17.0.1 from November 2017.
+
+
+// markup not found, no include::{specDir}intro.adoc[opts=optional]
+
+
+
+== Endpoints
+
+
+[.Default]
+=== Default
+
+
+[.createDocument]
+==== createDocument
+
+`POST /document`
+
+This operation creates a Document entity.
+
+===== Description
+
+
+
+
+// markup not found, no include::{specDir}document/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+
+====== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| DocumentCreate
+|  <<DocumentCreate>>
+| -
+| 
+| 
+
+|===
+
+
+
+
+
+===== Return Type
+
+<<Document_Create_Resp>>
+
+
+===== Content Type
+
+* application/json;charset=utf-8
+* application/json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===
+| Code | Message | Datatype
+
+
+| 201
+| Created
+|  <<Document_Create_Resp>>
+
+
+| 400
+| Bad Request
+|  <<Error>>
+
+
+| 500
+| Internal Server Error
+|  <<Error>>
+
+|===
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}document/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}document/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :document/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}document/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
+[#models]
+== Models
+
+
+[#Document]
+=== _Document_ 
+
+This is a document resource allowing meta-data and the information of the document model.
+
+[.fields-Document]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| type
+| 
+| String 
+| Name of the document type
+|  
+
+| name
+| 
+| String 
+| A string used to give a name to the document
+|  
+
+|===
+
+
+[#DocumentCreate]
+=== _DocumentCreate_ 
+
+This is the document resource when creating new documents
+
+[.fields-DocumentCreate]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| type
+| 
+| String 
+| Name of the document type
+|  
+
+| name
+| 
+| String 
+| A string used to give a name to the document
+|  
+
+|===
+
+
+[#DocumentCreateResp]
+=== _DocumentCreateResp_ 
+
+This is a document resource allowing meta-data and the information of the document model.
+
+[.fields-DocumentCreateResp]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| _links
+| 
+| Links 
+| 
+|  
+
+| id
+| 
+| String 
+| Identifier of the document.
+|  
+
+| lifecycleState
+| 
+| String 
+| The lifecycleState of the document, such as Active.
+|  
+
+| creationDate
+| 
+| String 
+| The date and time the document was created.
+| data-time 
+
+| type
+| 
+| String 
+| Name of the document type
+|  
+
+| name
+| 
+| String 
+| A string used to give a name to the document
+|  
+
+|===
+
+
+[#Error]
+=== _Error_ 
+
+Used when an API throws an Error, typically with a HTTP error response-code (4xx, 5xx).
+
+[.fields-Error]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| code
+| X
+| String 
+| Application specific error code, defined in the API or a common list.
+|  
+
+| message
+| X
+| String 
+| More details and corrective actions related to the error which can be shown to a client user.
+|  
+
+|===
+
+
+[#HALSelfLink]
+=== _HALSelfLink_ 
+
+Hyperlink reference to the resource itself.
+
+[.fields-HALSelfLink]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| href
+| X
+| String 
+| URI reference to the resource itself.
+|  
+
+|===
+
+
+[#Links]
+=== _Links_ 
+
+Link reference to the resource itself.
+
+[.fields-Links]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| self
+| 
+| HALSelfLink 
+| 
+|  
+
+|===
+
+
