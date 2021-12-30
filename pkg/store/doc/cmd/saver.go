@@ -41,7 +41,7 @@ func (s *Saver) Save(ctx context.Context, task *domain.Document) error {
 
 	input := &dynamodb.PutItemInput{
 		Item:      item,
-		TableName: aws.String(os.Getenv("DOC_BOX_DOC_TABLE_NAME")),
+		TableName: aws.String(os.Getenv("DOCUMENT_TABLE_NAME")),
 	}
 
 	if _, err = s.ddb.PutItem(ctx, input); err != nil {

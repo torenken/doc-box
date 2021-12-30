@@ -14,8 +14,9 @@ export class CreateDocumentFunc extends GoBaseFunc {
       applicationContext: 'DocBox#CreateDocument',
       entry: path.join(__dirname, '../../../../cmd/createDocument'),
       environment: {
-        DOC_BOX_DOC_TABLE_NAME: props.documentTable.tableName,
+        DOCUMENT_TABLE_NAME: props.documentTable.tableName,
       },
     });
+    props.documentTable.grantWriteData(this);
   }
 }

@@ -2,6 +2,34 @@
 
 exports[`DocBoxStackSnapshot 1`] = `
 Object {
+  "Outputs": Object {
+    "DocumentRestApiEndpoint98FEC9C0": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "DocumentRestApi6062B97A",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "DocumentRestApiDeploymentStageapiB0406D50",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
   "Parameters": Object {
     "BootstrapVersion": Object {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -25,7 +53,7 @@ Object {
         "Environment": Object {
           "Variables": Object {
             "APPLICATION_CONTEXT": "DocBox#CreateDocument",
-            "DOC_BOX_DOC_TABLE_NAME": Object {
+            "DOCUMENT_TABLE_NAME": Object {
               "Ref": "DocumentTable9FE6D880",
             },
           },
@@ -131,6 +159,250 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "DocBoxAccessLogGroupD6642F36": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 90,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DocumentRestApi6062B97A": Object {
+      "Properties": Object {
+        "EndpointConfiguration": Object {
+          "Types": Array [
+            "REGIONAL",
+          ],
+        },
+        "Name": "DocumentRestApi",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "DocumentRestApiAccount7BEBFC95": Object {
+      "DependsOn": Array [
+        "DocumentRestApi6062B97A",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "DocumentRestApiCloudWatchRoleD3B496D8",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "DocumentRestApiCloudWatchRoleD3B496D8": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DocumentRestApiDeployment5C15C8B87be9a55196e520a35752e5504c1adda8": Object {
+      "DependsOn": Array [
+        "DocumentRestApidocumentManagementdocumentPOSTAD0AE468",
+        "DocumentRestApidocumentManagementdocument4F103C70",
+        "DocumentRestApidocumentManagement575A3BF1",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "DocumentRestApiDeploymentStageapiB0406D50": Object {
+      "Properties": Object {
+        "AccessLogSetting": Object {
+          "DestinationArn": Object {
+            "Fn::GetAtt": Array [
+              "DocBoxAccessLogGroupD6642F36",
+              "Arn",
+            ],
+          },
+          "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"user\\":\\"$context.identity.user\\",\\"caller\\":\\"$context.identity.caller\\",\\"requestTime\\":\\"$context.requestTime\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"resourcePath\\":\\"$context.resourcePath\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\"}",
+        },
+        "DeploymentId": Object {
+          "Ref": "DocumentRestApiDeployment5C15C8B87be9a55196e520a35752e5504c1adda8",
+        },
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+        "StageName": "api",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "DocumentRestApidocumentManagement575A3BF1": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Fn::GetAtt": Array [
+            "DocumentRestApi6062B97A",
+            "RootResourceId",
+          ],
+        },
+        "PathPart": "documentManagement",
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "DocumentRestApidocumentManagementdocument4F103C70": Object {
+      "Properties": Object {
+        "ParentId": Object {
+          "Ref": "DocumentRestApidocumentManagement575A3BF1",
+        },
+        "PathPart": "document",
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+      },
+      "Type": "AWS::ApiGateway::Resource",
+    },
+    "DocumentRestApidocumentManagementdocumentPOSTAD0AE468": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "CreateDocumentFunc54FAC593",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Ref": "DocumentRestApidocumentManagementdocument4F103C70",
+        },
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "DocumentRestApidocumentManagementdocumentPOSTApiPermissionDocBoxStackDocumentRestApi05CE81F3POSTdocumentManagementdocumentFFA7610A": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CreateDocumentFunc54FAC593",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "DocumentRestApi6062B97A",
+              },
+              "/",
+              Object {
+                "Ref": "DocumentRestApiDeploymentStageapiB0406D50",
+              },
+              "/POST/documentManagement/document",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "DocumentRestApidocumentManagementdocumentPOSTApiPermissionTestDocBoxStackDocumentRestApi05CE81F3POSTdocumentManagementdocument409186E1": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "CreateDocumentFunc54FAC593",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "DocumentRestApi6062B97A",
+              },
+              "/test-invoke-stage/POST/documentManagement/document",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
     "DocumentTable9FE6D880": Object {
       "DeletionPolicy": "Retain",

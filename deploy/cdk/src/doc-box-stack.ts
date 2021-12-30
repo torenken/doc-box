@@ -1,9 +1,9 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
+import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
-import { CreateDocumentFunc, DocumentTable } from './docbox';
+import { CreateDocumentFunc, DocumentApi, DocumentTable } from './docbox';
 
-export interface DocBoxStackProps extends StackProps {
-}
+export interface DocBoxStackProps extends StackProps {}
 
 export class DocBoxStack extends Stack {
   constructor(scope: Construct, id: string, props: DocBoxStackProps = {}) {
@@ -16,6 +16,9 @@ export class DocBoxStack extends Stack {
       documentTable,
     });
 
-    documentTable.grantWriteData(createDocumentFunc);
+    const documentApi = new DocumentApi(this, 'DocumentRestApi');
+    const documentResource = documentApi.root.addResource('documentManagement').addResource('document');
+
+    documentResource.addMethod('POST', new LambdaIntegration(createDocumentFunc));
   }
 }
