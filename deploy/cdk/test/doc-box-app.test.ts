@@ -1,11 +1,21 @@
-import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { MyStack } from '../src/doc-box-app';
+import { DocBoxStack } from '../src/doc-box-stack';
+import { TestApp } from './cdk-test-helper';
 
-test('Snapshot', () => {
-  const app = new App();
-  const stack = new MyStack(app, 'test');
+
+test('DocBoxStackSnapshot', () => {
+  const app = new TestApp();
+  const stack = new DocBoxStack(app, 'DocBoxStack');
 
   const template = Template.fromStack(stack);
+
+  template.hasResourceProperties('AWS::Lambda::Function', {
+    Environment: {
+      Variables: {
+        APPLICATION_CONTEXT: 'DocBox#CreateDocument',
+      },
+    },
+  });
+
   expect(template.toJSON()).toMatchSnapshot();
 });

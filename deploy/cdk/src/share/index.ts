@@ -1,0 +1,1 @@
+export * from './go-base-func';
