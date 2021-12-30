@@ -26,5 +26,7 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 });
 
 project.setScript('postinstall', 'touch node_modules/go.mod'); //This step is necessary so that go mod tidy ignores the cdk-go deps.
+project.setScript('audit:level-high', 'yarn audit --level high --groups dependencies; [[ $? -lt 7 ]] || exit 1');
+project.setScript('audit:dev-level-critical', 'yarn audit --level critical --groups devDependencies; [[ $? -lt 16 ]] || exit 1');
 
 project.synth();

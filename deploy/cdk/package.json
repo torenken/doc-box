@@ -26,7 +26,9 @@
     "upgrade-projen": "npx projen upgrade-projen",
     "watch": "npx projen watch",
     "projen": "npx projen",
-    "postinstall": "touch node_modules/go.mod"
+    "postinstall": "touch node_modules/go.mod",
+    "audit:level-high": "yarn audit --level high --groups dependencies; [[ $? -lt 7 ]] || exit 1",
+    "audit:dev-level-critical": "yarn audit --level critical --groups devDependencies; [[ $? -lt 16 ]] || exit 1"
   },
   "author": {
     "name": "Thomas Renken",

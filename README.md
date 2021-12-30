@@ -27,3 +27,13 @@ See **deploy/cdk/README.md** for build of the AWS CDK project.
 * [Golang](https://golang.org)
 * [Node.js](https://nodejs.org/en/download/)
 * [Yarn - Package Manager](https://yarnpkg.com/)
+
+## Getting Started
+### Installing dependencies & building the target
+The used build management tool is Make, all Make commands are executed in the root folder.
+
+#### Building the target
+Complete Build of Golang project via Makefile
+```shell
+$ make
+```
