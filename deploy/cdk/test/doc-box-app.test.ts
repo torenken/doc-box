@@ -12,7 +12,10 @@ test('DocBoxStackSnapshot', () => {
   template.hasResourceProperties('AWS::Lambda::Function', {
     Environment: {
       Variables: {
-        APPLICATION_CONTEXT: 'DocBox#CreateDocument',
+        APPLICATION_CONTEXT: 'DocBox#createDocument',
+        DOCUMENT_TABLE_NAME: {
+          Ref: 'DocumentTable9FE6D880',
+        },
       },
     },
   });

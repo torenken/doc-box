@@ -9,10 +9,11 @@ export interface CreateDocumentFuncProps {
 
 export class CreateDocumentFunc extends GoBaseFunc {
   constructor(scope: Construct, id: string, props: CreateDocumentFuncProps) {
+    const useCase = 'createDocument';
     super(scope, id, {
-      functionName: 'doc-box-createDocument',
-      applicationContext: 'DocBox#CreateDocument',
-      entry: path.join(__dirname, '../../../../cmd/createDocument'),
+      useCase: useCase,
+      context: `DocBox#${useCase}`,
+      entry: path.join(__dirname, `../../../../cmd/${useCase}`),
       environment: {
         DOCUMENT_TABLE_NAME: props.documentTable.tableName,
       },

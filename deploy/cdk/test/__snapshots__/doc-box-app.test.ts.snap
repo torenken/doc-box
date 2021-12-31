@@ -55,7 +55,7 @@ Object {
         },
         "Environment": Object {
           "Variables": Object {
-            "APPLICATION_CONTEXT": "DocBox#CreateDocument",
+            "APPLICATION_CONTEXT": "DocBox#createDocument",
             "DOCUMENT_TABLE_NAME": Object {
               "Ref": "DocumentTable9FE6D880",
             },
