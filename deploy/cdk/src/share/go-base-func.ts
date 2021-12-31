@@ -1,4 +1,5 @@
 import { GoFunction, GoFunctionProps } from '@aws-cdk/aws-lambda-go-alpha';
+import { Architecture } from 'aws-cdk-lib/aws-lambda';
 import { RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
 
@@ -13,6 +14,7 @@ export class GoBaseFunc extends GoFunction {
       functionName: props.functionName,
       entry: props.entry,
       logRetention: RetentionDays.ONE_MONTH,
+      architecture: Architecture.ARM_64,
       bundling: {
         goBuildFlags: ['-ldflags "-s -w"'],
         cgoEnabled: false,

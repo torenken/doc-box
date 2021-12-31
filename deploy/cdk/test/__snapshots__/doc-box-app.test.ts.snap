@@ -44,11 +44,14 @@ Object {
         "CreateDocumentFuncServiceRole8188B1E2",
       ],
       "Properties": Object {
+        "Architectures": Array [
+          "arm64",
+        ],
         "Code": Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "20b72f9687f0640363cd435b1d0511ad63039198d4731a1f7f592b1cf8c69aa0.zip",
+          "S3Key": "11e2576b1e7ddafe4c874da027938c19109718748bcb94634b1dfb492dac3c74.zip",
         },
         "Environment": Object {
           "Variables": Object {
