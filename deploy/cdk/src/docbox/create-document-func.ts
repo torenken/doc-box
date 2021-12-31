@@ -16,6 +16,7 @@ export class CreateDocumentFunc extends GoBaseFunc {
       environment: {
         DOCUMENT_TABLE_NAME: props.documentTable.tableName,
       },
+      memorySize: 1024,
     });
     props.documentTable.grantWriteData(this);
   }

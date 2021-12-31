@@ -63,6 +63,7 @@ Object {
         },
         "FunctionName": "doc-box-createDocument",
         "Handler": "bootstrap",
+        "MemorySize": 1024,
         "Role": Object {
           "Fn::GetAtt": Array [
             "CreateDocumentFuncServiceRole8188B1E2",
