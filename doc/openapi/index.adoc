@@ -192,22 +192,22 @@ This is a document resource allowing meta-data and the information of the docume
 |  
 
 | id
-| 
+| X
 | String 
 | Identifier of the document.
 |  
 
 | lifecycleState
-| 
+| X
 | String 
 | The lifecycleState of the document, such as Active.
 |  
 
 | creationDate
 | 
-| String 
+| Date 
 | The date and time the document was created.
-| data-time 
+| date-time 
 
 | type
 | 

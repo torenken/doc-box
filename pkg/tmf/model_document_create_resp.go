@@ -12,17 +12,18 @@ package tmf
 
 import (
 	"encoding/json"
+	"time"
 )
 
 // DocumentCreateResp This is a document resource allowing meta-data and the information of the document model.
 type DocumentCreateResp struct {
 	Links *Links `json:"_links,omitempty"`
 	// Identifier of the document.
-	Id *string `json:"id,omitempty"`
+	Id string `json:"id"`
 	// The lifecycleState of the document, such as Active.
-	LifecycleState *string `json:"lifecycleState,omitempty"`
+	LifecycleState string `json:"lifecycleState"`
 	// The date and time the document was created.
-	CreationDate *string `json:"creationDate,omitempty"`
+	CreationDate *time.Time `json:"creationDate,omitempty"`
 	// Name of the document type
 	Type *string `json:"type,omitempty"`
 	// A string used to give a name to the document
@@ -33,7 +34,7 @@ type DocumentCreateResp struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDocumentCreateResp() *DocumentCreateResp {
+func NewDocumentCreateResp(id string, lifecycleState string) *DocumentCreateResp {
 	this := DocumentCreateResp{}
 	return &this
 }
@@ -78,74 +79,58 @@ func (o *DocumentCreateResp) SetLinks(v Links) {
 	o.Links = &v
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *DocumentCreateResp) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *DocumentCreateResp) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *DocumentCreateResp) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *DocumentCreateResp) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetLifecycleState returns the LifecycleState field value if set, zero value otherwise.
+// GetLifecycleState returns the LifecycleState field value
 func (o *DocumentCreateResp) GetLifecycleState() string {
-	if o == nil || o.LifecycleState == nil {
+	if o == nil {
 		var ret string
 		return ret
 	}
-	return *o.LifecycleState
+
+	return o.LifecycleState
 }
 
-// GetLifecycleStateOk returns a tuple with the LifecycleState field value if set, nil otherwise
+// GetLifecycleStateOk returns a tuple with the LifecycleState field value
 // and a boolean to check if the value has been set.
 func (o *DocumentCreateResp) GetLifecycleStateOk() (*string, bool) {
-	if o == nil || o.LifecycleState == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LifecycleState, true
+	return &o.LifecycleState, true
 }
 
-// HasLifecycleState returns a boolean if a field has been set.
-func (o *DocumentCreateResp) HasLifecycleState() bool {
-	if o != nil && o.LifecycleState != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetLifecycleState gets a reference to the given string and assigns it to the LifecycleState field.
+// SetLifecycleState sets field value
 func (o *DocumentCreateResp) SetLifecycleState(v string) {
-	o.LifecycleState = &v
+	o.LifecycleState = v
 }
 
 // GetCreationDate returns the CreationDate field value if set, zero value otherwise.
-func (o *DocumentCreateResp) GetCreationDate() string {
+func (o *DocumentCreateResp) GetCreationDate() time.Time {
 	if o == nil || o.CreationDate == nil {
-		var ret string
+		var ret time.Time
 		return ret
 	}
 	return *o.CreationDate
@@ -153,7 +138,7 @@ func (o *DocumentCreateResp) GetCreationDate() string {
 
 // GetCreationDateOk returns a tuple with the CreationDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *DocumentCreateResp) GetCreationDateOk() (*string, bool) {
+func (o *DocumentCreateResp) GetCreationDateOk() (*time.Time, bool) {
 	if o == nil || o.CreationDate == nil {
 		return nil, false
 	}
@@ -169,8 +154,8 @@ func (o *DocumentCreateResp) HasCreationDate() bool {
 	return false
 }
 
-// SetCreationDate gets a reference to the given string and assigns it to the CreationDate field.
-func (o *DocumentCreateResp) SetCreationDate(v string) {
+// SetCreationDate gets a reference to the given time.Time and assigns it to the CreationDate field.
+func (o *DocumentCreateResp) SetCreationDate(v time.Time) {
 	o.CreationDate = &v
 }
 
@@ -243,10 +228,10 @@ func (o DocumentCreateResp) MarshalJSON() ([]byte, error) {
 	if o.Links != nil {
 		toSerialize["_links"] = o.Links
 	}
-	if o.Id != nil {
+	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.LifecycleState != nil {
+	if true {
 		toSerialize["lifecycleState"] = o.LifecycleState
 	}
 	if o.CreationDate != nil {

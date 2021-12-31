@@ -51,6 +51,9 @@ components:
     Document_Create_Resp:
       description: 'This is a document resource allowing meta-data and the information of the document model.'
       type: object
+      required:
+        - id
+        - lifecycleState
       allOf:
         - $ref: '#/components/schemas/Document'
       properties:
@@ -65,7 +68,7 @@ components:
         creationDate:
           description: 'The date and time the document was created.'
           type: string
-          format: data-time
+          format: date-time
 
     Document:
       description: 'This is a document resource allowing meta-data and the information of the document model.'
