@@ -30,16 +30,16 @@ func (h CreateDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 	document, err := validateAndMap(req)
 	if err != nil {
 		h.log.Warnf("Error while mapping the request: %s", err.Error())
-		return mapResponse(http.StatusBadRequest, mapper.ToError(err.Error(), 99))
+		return failed(http.StatusBadRequest, err)
 	}
 	h.log.Infof("Input validation was successful. Processing document creation")
 
 	// Create Document
 	if err := cmd.NewCreateCommand(h.ddb, h.log).Execute(ctx, document); err != nil {
 		h.log.Errorf("Failed to create document: %s", err.Error())
-		return mapResponse(http.StatusInternalServerError, mapper.ToError(err.Error(), 99))
+		return failed(http.StatusInternalServerError, err)
 	}
-	return mapResponse(http.StatusCreated, mapper.ToDocumentResp(document, req))
+	return successfullyCreated(document, req)
 }
 
 func validateAndMap(req events.APIGatewayProxyRequest) (domain.Document, error) {
@@ -48,14 +48,4 @@ func validateAndMap(req events.APIGatewayProxyRequest) (domain.Document, error) 
 		return domain.Document{}, errors.New("the given body does not match to api. Please check the request")
 	}
 	return mapper.ToDocument(docReq), nil
-}
-
-func mapResponse(statusCode int, response interface{}) (events.APIGatewayProxyResponse, error) {
-	body, _ := json.Marshal(response)
-	headers := map[string]string{"Content-Type": "application/json"}
-	return events.APIGatewayProxyResponse{
-		Headers:    headers,
-		StatusCode: statusCode,
-		Body:       string(body),
-	}, nil
 }

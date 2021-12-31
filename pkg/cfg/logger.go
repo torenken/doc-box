@@ -13,7 +13,7 @@ import (
 
 const (
 	FieldRequestID          = "requestId"
-	FieldApplicationContext = "applicationCtx"
+	FieldApplicationContext = "context"
 )
 
 func NewLogger(ctx context.Context) *zap.Logger {

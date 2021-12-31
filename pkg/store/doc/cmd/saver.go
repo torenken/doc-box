@@ -31,8 +31,8 @@ type Saver struct {
 	log *zap.SugaredLogger
 }
 
-func (s *Saver) Save(ctx context.Context, task domain.Document) error {
-	item, err := attributevalue.MarshalMap(task)
+func (s *Saver) Save(ctx context.Context, doc domain.Document) error {
+	item, err := attributevalue.MarshalMap(doc)
 	if err != nil {
 		s.log.Errorf("document can not be marshaled for storage: %s", err.Error())
 		return ErrDocMarshal
