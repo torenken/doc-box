@@ -1,6 +1,15 @@
 package cmd
 
-import "go.uber.org/zap"
+import (
+	"context"
+	"errors"
+
+	"go.uber.org/zap"
+
+	"github.com/torenken/doc-box/pkg/store/doc/domain"
+)
+
+var ErrTskCreate = errors.New("technical issue while the task was created")
 
 type DynamoDBAPI interface {
 	DynamoDBPutter
@@ -13,4 +22,13 @@ func NewCreateCommand(ddb DynamoDBAPI, log *zap.SugaredLogger) *CreateCommand {
 type CreateCommand struct {
 	ddb DynamoDBAPI
 	log *zap.SugaredLogger
+}
+
+func (c *CreateCommand) Execute(ctx context.Context, doc domain.Document) error {
+	if err := NewSaver(c.ddb, c.log).Save(ctx, doc); err != nil {
+		c.log.Errorf("Failed to save the document. %s", err.Error())
+		return ErrTskCreate
+	}
+	c.log.Infof("Storing in the database was successful.")
+	return nil
 }
