@@ -9,8 +9,8 @@ import (
 	"github.com/torenken/doc-box/pkg/tmf"
 )
 
-func ToError(message string, statusCode int) *tmf.Error {
-	return &tmf.Error{
+func ToError(message string, statusCode int) tmf.Error {
+	return tmf.Error{
 		Code:    strconv.Itoa(statusCode),
 		Message: message,
 	}
@@ -20,9 +20,9 @@ func ToDocument(doc tmf.DocumentCreate) domain.Document {
 	return domain.NewDocument(doc.GetName(), doc.GetType())
 }
 
-func ToDocumentResp(doc domain.Document, req events.APIGatewayProxyRequest) tmf.DocumentCreateResp {
+func ToDocumentResp(doc domain.Document, req events.APIGatewayProxyRequest) tmf.DocumentResp {
 	selfLink := req.Path + "/" + doc.Id
-	return tmf.DocumentCreateResp{
+	return tmf.DocumentResp{
 		Links:          &tmf.Links{Self: tmf.NewHALSelfLink(selfLink)},
 		Id:             doc.Id,
 		LifecycleState: doc.LifecycleState,

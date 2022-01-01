@@ -17,6 +17,9 @@ export class DocumentApi extends RestApi {
         })),
         accessLogFormat: AccessLogFormat.jsonWithStandardFields(),
       },
+      binaryMediaTypes: [
+        'application/pdf',
+      ],
     });
   }
 }

@@ -6,7 +6,8 @@ BUILD_DIR := ./build
 
 # List of aws lambda functions (see cmd folder)
 ALL_LAMBDAS = \
-	createDocument
+	createDocument \
+	attachDocument
 
 .DEFAULT_GOAL := all
 
