@@ -1,11 +1,13 @@
 openapi: 3.0.0
 info:
-  description: <-
+  description: >-
     The intent of this API is to provide a consistent/standardized mechanism to create new
     documents, delete existing documents, retrieving information about uploaded documents. This Specification
     is based on TMF667 - Document Management Release 17.0.1 from November 2017.
   version: 0.0.1
   title: Doc Box API
+  contact:
+    email: https://github.com/torenken/doc-box
   license:
     name: MIT
 servers:
@@ -13,10 +15,10 @@ servers:
 paths:
   /document:
     post:
-      summary: 'This operation creates a Document entity.'
+      summary: 'This operation creates a document entity'
       operationId: 'createDocument'
       requestBody:
-        description: ''
+        description: 'The document to be created'
         content:
           application/json;charset=utf-8:
             schema:
@@ -27,7 +29,7 @@ paths:
           content:
             application/json;charset=utf-8:
               schema:
-                $ref: '#/components/schemas/Document_Create_Resp'
+                $ref: '#/components/schemas/Document_Resp'
         400:
           description: 'Bad Request'
           content:
@@ -40,6 +42,73 @@ paths:
             application/json;charset=utf-8:
               schema:
                 $ref: '#/components/schemas/Error'
+  /document/{docId}:
+    get:
+      summary: 'Retrieves a document by id'
+      parameters:
+        - name: docId
+          in: path
+          description: 'Identifier of the document'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document_Resp'
+        404:
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /document/{docId}/attachment:
+    post:
+      summary: 'This operation create a document attachment entity'
+      parameters:
+        - name: docId
+          in: path
+          description: 'Identifier of the document'
+          required: true
+          schema:
+            type: string
+      operationId: 'attachDocument'
+      requestBody:
+        description: 'The DocumentAttachment to be created'
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: byte
+        required: true
+      responses:
+        201:
+          description: 'Accepted'
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Attachment_Resp'
+        400:
+          description: Bad Request
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal Server Error
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Document_Create:
@@ -48,7 +117,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/Document'
 
-    Document_Create_Resp:
+    Document_Resp:
       description: 'This is a document resource allowing meta-data and the information of the document model.'
       type: object
       required:
@@ -79,6 +148,13 @@ components:
           type: string
         name:
           description: 'A string used to give a name to the document'
+          type: string
+
+    Attachment_Resp:
+      type: object
+      properties:
+        preSignedUrl:
+          description: 'The preSigned url the '
           type: string
 
     Error:

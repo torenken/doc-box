@@ -1,5 +1,5 @@
 = Doc Box API
-team@openapitools.org
+https://github.com/torenken/doc-box
 0.0.1
 :toc: left
 :numbered:
@@ -14,7 +14,7 @@ team@openapitools.org
 
 [abstract]
 .Abstract
-<- The intent of this API is to provide a consistent/standardized mechanism to create new documents, delete existing documents, retrieving information about uploaded documents. This Specification is based on TMF667 - Document Management Release 17.0.1 from November 2017.
+The intent of this API is to provide a consistent/standardized mechanism to create new documents, delete existing documents, retrieving information about uploaded documents. This Specification is based on TMF667 - Document Management Release 17.0.1 from November 2017.
 
 
 // markup not found, no include::{specDir}intro.adoc[opts=optional]
@@ -28,12 +28,117 @@ team@openapitools.org
 === Default
 
 
+[.attachDocument]
+==== attachDocument
+
+`POST /document/{docId}/attachment`
+
+This operation create a document attachment entity
+
+===== Description
+
+
+
+
+// markup not found, no include::{specDir}document/\{docId\}/attachment/POST/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| docId
+| Identifier of the document 
+| X
+| null
+| 
+
+|===
+
+====== Body Parameter
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| body
+| The DocumentAttachment to be created <<ByteArray>>
+| X
+| 
+| 
+
+|===
+
+
+
+
+
+===== Return Type
+
+<<Attachment_Resp>>
+
+
+===== Content Type
+
+* application/json;charset=utf-8
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===
+| Code | Message | Datatype
+
+
+| 201
+| Accepted
+|  <<Attachment_Resp>>
+
+
+| 400
+| Bad Request
+|  <<Error>>
+
+
+| 500
+| Internal Server Error
+|  <<Error>>
+
+|===
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}document/\{docId\}/attachment/POST/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}document/\{docId\}/attachment/POST/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :document/{docId}/attachment/POST/POST.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}document/\{docId\}/attachment/POST/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
 [.createDocument]
 ==== createDocument
 
 `POST /document`
 
-This operation creates a Document entity.
+This operation creates a document entity
 
 ===== Description
 
@@ -54,7 +159,7 @@ This operation creates a Document entity.
 |Name| Description| Required| Default| Pattern
 
 | DocumentCreate
-|  <<DocumentCreate>>
+| The document to be created <<DocumentCreate>>
 | -
 | 
 | 
@@ -67,7 +172,7 @@ This operation creates a Document entity.
 
 ===== Return Type
 
-<<Document_Create_Resp>>
+<<Document_Resp>>
 
 
 ===== Content Type
@@ -85,7 +190,7 @@ This operation creates a Document entity.
 
 | 201
 | Created
-|  <<Document_Create_Resp>>
+|  <<Document_Resp>>
 
 
 | 400
@@ -121,8 +226,119 @@ ifdef::internal-generation[]
 endif::internal-generation[]
 
 
+[.documentDocIdGet]
+==== documentDocIdGet
+
+`GET /document/{docId}`
+
+Retrieves a document by id
+
+===== Description
+
+
+
+
+// markup not found, no include::{specDir}document/\{docId\}/GET/spec.adoc[opts=optional]
+
+
+
+===== Parameters
+
+====== Path Parameters
+
+[cols="2,3,1,1,1"]
+|===
+|Name| Description| Required| Default| Pattern
+
+| docId
+| Identifier of the document 
+| X
+| null
+| 
+
+|===
+
+
+
+
+
+
+===== Return Type
+
+<<Document_Resp>>
+
+
+===== Content Type
+
+* application/json
+
+===== Responses
+
+.http response codes
+[cols="2,3,1"]
+|===
+| Code | Message | Datatype
+
+
+| 200
+| OK
+|  <<Document_Resp>>
+
+
+| 404
+| Not Found
+|  <<Error>>
+
+
+| 500
+| Internal Server Error
+|  <<Error>>
+
+|===
+
+===== Samples
+
+
+// markup not found, no include::{snippetDir}document/\{docId\}/GET/http-request.adoc[opts=optional]
+
+
+// markup not found, no include::{snippetDir}document/\{docId\}/GET/http-response.adoc[opts=optional]
+
+
+
+// file not found, no * wiremock data link :document/{docId}/GET/GET.json[]
+
+
+ifdef::internal-generation[]
+===== Implementation
+
+// markup not found, no include::{specDir}document/\{docId\}/GET/implementation.adoc[opts=optional]
+
+
+endif::internal-generation[]
+
+
 [#models]
 == Models
+
+
+[#AttachmentResp]
+=== _AttachmentResp_ 
+
+
+
+[.fields-AttachmentResp]
+[cols="2,1,2,4,1"]
+|===
+| Field Name| Required| Type| Description| Format
+
+| preSignedUrl
+| 
+| String 
+| The preSigned url the 
+|  
+
+|===
 
 
 [#Document]
@@ -175,12 +391,12 @@ This is the document resource when creating new documents
 |===
 
 
-[#DocumentCreateResp]
-=== _DocumentCreateResp_ 
+[#DocumentResp]
+=== _DocumentResp_ 
 
 This is a document resource allowing meta-data and the information of the document model.
 
-[.fields-DocumentCreateResp]
+[.fields-DocumentResp]
 [cols="2,1,2,4,1"]
 |===
 | Field Name| Required| Type| Description| Format
