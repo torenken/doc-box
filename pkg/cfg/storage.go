@@ -13,6 +13,11 @@ func NewS3() *s3.Client {
 	return s3.NewFromConfig(cfg)
 }
 
+func NewS3PreSign() *s3.PresignClient {
+	client := NewS3()
+	return s3.NewPresignClient(client)
+}
+
 func NewLocalS3(url string) *s3.Client {
 	customResolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
 		if service == s3.ServiceID && region == "eu-central-1" {

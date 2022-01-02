@@ -31,3 +31,9 @@ func ToDocumentResp(doc domain.Document, req events.APIGatewayProxyRequest) tmf.
 		Name:           &doc.Name,
 	}
 }
+
+func ToAttachmentResp(attachment domain.Attachment) tmf.AttachmentResp {
+	return tmf.AttachmentResp{
+		PreSignedUrl: &attachment.Url,
+	}
+}

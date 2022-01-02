@@ -5,13 +5,22 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+
+	"github.com/torenken/doc-box/pkg/cfg"
+	"github.com/torenken/doc-box/pkg/store/doc/handler"
 )
 
+var (
+	s3s *s3.Client
+)
+
+func init() {
+	s3s = cfg.NewS3()
+}
+
 func handle(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
-		StatusCode: 201,
-		Body:       "created",
-	}, nil
+	return handler.NewAttachDocumentHandler(s3s, cfg.NewLogger(ctx).Sugar()).Handle(ctx, req)
 }
 
 func main() {

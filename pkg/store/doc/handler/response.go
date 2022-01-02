@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -10,8 +11,15 @@ import (
 	"github.com/torenken/doc-box/pkg/store/doc/handler/mapper"
 )
 
-func successfullyCreated(doc domain.Document, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return mapResponse(http.StatusCreated, mapper.ToDocumentResp(doc, req))
+func successfullyCreated(response interface{}, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	switch v := response.(type) {
+	case domain.Document:
+		return mapResponse(http.StatusCreated, mapper.ToDocumentResp(v, req))
+	case domain.Attachment:
+		return mapResponse(http.StatusCreated, mapper.ToAttachmentResp(v))
+	default:
+		return failed(http.StatusInternalServerError, errors.New("error during the creation response"))
+	}
 }
 
 func failed(statusCode int, err error) (events.APIGatewayProxyResponse, error) {

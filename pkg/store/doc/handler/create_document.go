@@ -27,7 +27,7 @@ type CreateDocumentHandler struct {
 func (h CreateDocumentHandler) Handle(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	h.log.Info("Starting create document")
 
-	document, err := validateAndMap(req)
+	document, err := validateAndMapDocument(req)
 	if err != nil {
 		h.log.Warnf("Error while mapping the request: %s", err.Error())
 		return failed(http.StatusBadRequest, err)
@@ -39,10 +39,12 @@ func (h CreateDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 		h.log.Errorf("Failed to create document: %s", err.Error())
 		return failed(http.StatusInternalServerError, err)
 	}
+
+	h.log.Infof("The document was created successfully with id: %s.", document.Id)
 	return successfullyCreated(document, req)
 }
 
-func validateAndMap(req events.APIGatewayProxyRequest) (domain.Document, error) {
+func validateAndMapDocument(req events.APIGatewayProxyRequest) (domain.Document, error) {
 	var docReq tmf.DocumentCreate
 	if err := json.Unmarshal([]byte(req.Body), &docReq); err != nil {
 		return domain.Document{}, errors.New("the given body does not match to api. Please check the request")
