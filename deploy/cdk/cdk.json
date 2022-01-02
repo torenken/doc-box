@@ -1,6 +1,7 @@
 {
   "app": "npx ts-node -P tsconfig.json --prefer-ts-exts src/doc-box-app.ts",
   "context": {
+    "docBucketName": "torenken-doc-box-storage",
     "@aws-cdk/core:newStyleStackSynthesis": true
   },
   "output": "cdk.out",

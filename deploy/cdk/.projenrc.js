@@ -1,6 +1,7 @@
 const { awscdk } = require('projen');
 
 const cdkVersion = '2.3.0';
+const appName = 'torenken-doc-box';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
   cdkVersion: cdkVersion,
@@ -14,6 +15,9 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   ],
 
   context: {
+    //docBox
+    'docBucketName': `${appName}-storage`,
+
     '@aws-cdk/core:newStyleStackSynthesis': true,
   },
   appEntrypoint: 'doc-box-app.ts',

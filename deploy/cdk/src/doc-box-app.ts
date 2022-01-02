@@ -6,6 +6,10 @@ const app = new App();
 Tags.of(app).add('domain', 'document-management');
 Tags.of(app).add('owner', 'torenken');
 
-new DocBoxStack(app, 'DocBoxStack');
+const docBucketName = app.node.tryGetContext('docBucketName') as string;
+
+new DocBoxStack(app, 'DocBoxStack', {
+  documentBucketName: docBucketName,
+});
 
 app.synth();

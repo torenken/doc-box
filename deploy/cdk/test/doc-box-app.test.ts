@@ -4,8 +4,12 @@ import { TestApp } from './cdk-test-helper';
 
 
 test('DocBoxStackSnapshot', () => {
+  const projectName = 'torenken-doc-box';
+
   const app = new TestApp();
-  const stack = new DocBoxStack(app, 'DocBoxStack');
+  const stack = new DocBoxStack(app, 'DocBoxStack', {
+    documentBucketName: `${projectName}-storage`,
+  });
 
   const template = Template.fromStack(stack);
 
@@ -19,6 +23,18 @@ test('DocBoxStackSnapshot', () => {
       },
     },
   });
+
+  template.hasResourceProperties('AWS::Lambda::Function', {
+    Environment: {
+      Variables: {
+        APPLICATION_CONTEXT: 'DocBox#attachDocument',
+        DOCUMENT_STORAGE_NAME: {
+          Ref: 'DocumentBucketAE41E5A9',
+        },
+      },
+    },
+  });
+
 
   expect(template.toJSON()).toMatchSnapshot();
 });

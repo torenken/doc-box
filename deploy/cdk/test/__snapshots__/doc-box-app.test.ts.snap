@@ -40,6 +40,7 @@ Object {
   "Resources": Object {
     "AttachDocumentFunc7255A71A": Object {
       "DependsOn": Array [
+        "AttachDocumentFuncServiceRoleDefaultPolicy4AB677CD",
         "AttachDocumentFuncServiceRoleBE7D978C",
       ],
       "Properties": Object {
@@ -55,6 +56,9 @@ Object {
         "Environment": Object {
           "Variables": Object {
             "APPLICATION_CONTEXT": "DocBox#attachDocument",
+            "DOCUMENT_STORAGE_NAME": Object {
+              "Ref": "DocumentBucketAE41E5A9",
+            },
           },
         },
         "FunctionName": "doc-box-attachDocument",
@@ -123,6 +127,52 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "AttachDocumentFuncServiceRoleDefaultPolicy4AB677CD": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:DeleteObject*",
+                "s3:PutObject",
+                "s3:Abort*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "DocumentBucketAE41E5A9",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "DocumentBucketAE41E5A9",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "AttachDocumentFuncServiceRoleDefaultPolicy4AB677CD",
+        "Roles": Array [
+          Object {
+            "Ref": "AttachDocumentFuncServiceRoleBE7D978C",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "CreateDocumentFunc54FAC593": Object {
       "DependsOn": Array [
@@ -257,6 +307,29 @@ Object {
       },
       "Type": "AWS::Logs::LogGroup",
       "UpdateReplacePolicy": "Delete",
+    },
+    "DocumentBucketAE41E5A9": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+        "BucketName": "torenken-doc-box-storage",
+        "PublicAccessBlockConfiguration": Object {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true,
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
     },
     "DocumentRestApi6062B97A": Object {
       "Properties": Object {
