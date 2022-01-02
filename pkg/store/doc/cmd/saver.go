@@ -32,19 +32,25 @@ type Saver struct {
 }
 
 func (s *Saver) Save(ctx context.Context, doc domain.Document) error {
+	s.log.Debugf("Save the document with the following parameter: %+v", doc)
+
 	item, err := attributevalue.MarshalMap(doc)
 	if err != nil {
-		s.log.Errorf("document can not be marshaled for storage: %s", err.Error())
+		s.log.Errorf("The document can not be marshaled: %s", err.Error())
 		return ErrDocMarshal
 	}
 
+	tableName := os.Getenv("DOCUMENT_TABLE_NAME")
+
+	s.log.Debugf("Save the document in %s table.", tableName)
+
 	input := &dynamodb.PutItemInput{
 		Item:      item,
-		TableName: aws.String(os.Getenv("DOCUMENT_TABLE_NAME")),
+		TableName: aws.String(tableName),
 	}
 
 	if _, err = s.ddb.PutItem(ctx, input); err != nil {
-		s.log.Errorf("document cannot be saved in the database: %s", err)
+		s.log.Errorf("The document cannot be saved in the database: %s", err)
 		return ErrDocSave
 	}
 	return nil

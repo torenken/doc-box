@@ -34,7 +34,7 @@ type Uploader struct {
 }
 
 func (u Uploader) Upload(ctx context.Context, attachment domain.Attachment) error {
-	u.log.Debugf("Uploading with the following input parameter: %+v", attachment)
+	u.log.Debugf("Upload the attachment with the following parameter: %+v", attachment)
 
 	decodeString, err := base64.StdEncoding.DecodeString(attachment.Data)
 	if err != nil {
@@ -45,7 +45,7 @@ func (u Uploader) Upload(ctx context.Context, attachment domain.Attachment) erro
 	bucket := os.Getenv("DOCUMENT_STORAGE_NAME")
 	key := fmt.Sprintf("%s.pdf", attachment.DocId) //current only one attachment per document
 
-	u.log.Debugf("Storing attachment in %s and %s bucket.", key, bucket)
+	u.log.Debugf("Upload the attachment in %s and %s bucket.", key, bucket)
 
 	input := &s3.PutObjectInput{
 		Bucket: aws.String(bucket),

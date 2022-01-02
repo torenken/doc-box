@@ -12,12 +12,13 @@ import (
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
-func NewAttachDocumentHandler(s3s cmd.S3API, log *zap.SugaredLogger) AttachDocumentHandler {
-	return AttachDocumentHandler{s3s: s3s, log: log}
+func NewAttachDocumentHandler(s3s cmd.S3Putter, s3p cmd.S3PreSigner, log *zap.SugaredLogger) AttachDocumentHandler {
+	return AttachDocumentHandler{s3s: s3s, s3p: s3p, log: log}
 }
 
 type AttachDocumentHandler struct {
-	s3s cmd.S3API
+	s3s cmd.S3Putter
+	s3p cmd.S3PreSigner
 	log *zap.SugaredLogger
 }
 
@@ -31,7 +32,7 @@ func (h AttachDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 	}
 	h.log.Infof("Input validation was successful. Processing document attachment")
 
-	if err := cmd.NewAttachCommand(h.s3s, h.log).Execute(ctx, &attachment); err != nil {
+	if err := cmd.NewAttachCommand(h.s3s, h.s3p, h.log).Execute(ctx, &attachment); err != nil {
 		h.log.Errorf("Failed to attach document: %s", err.Error())
 		return failed(http.StatusInternalServerError, err)
 	}

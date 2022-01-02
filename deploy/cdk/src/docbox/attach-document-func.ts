@@ -19,6 +19,6 @@ export class AttachDocumentFunc extends GoBaseFunc {
         DOCUMENT_STORAGE_NAME: props.documentBucket.bucketName,
       },
     });
-    props.documentBucket.grantWrite(this);
+    props.documentBucket.grantReadWrite(this);
   }
 }
