@@ -3,6 +3,7 @@ package cfg
 import (
 	"context"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/aws/aws-lambda-go/lambdacontext"
@@ -23,10 +24,15 @@ func TestNewLogger(t *testing.T) {
 	})
 
 	t.Run("verify debug mode", func(t *testing.T) {
+		cleanUpEnv()
+
 		err := os.Setenv("DEBUG", "")
 		logger := NewLogger(ctx)
-
 		assert.NoError(t, err)
+
+		err = os.Unsetenv("DEBUG")
+		assert.NoError(t, err)
+
 		assert.True(t, logger.Core().Enabled(zap.DebugLevel))
 	})
 
@@ -35,4 +41,11 @@ func TestNewLogger(t *testing.T) {
 
 		assert.True(t, logger.Core().Enabled(zap.InfoLevel))
 	})
+}
+
+func cleanUpEnv() {
+	for _, element := range os.Environ() {
+		variable := strings.Split(element, "=")
+		_ = os.Unsetenv(variable[0])
+	}
 }

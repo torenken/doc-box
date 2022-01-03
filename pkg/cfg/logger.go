@@ -2,6 +2,7 @@ package cfg
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -15,6 +16,12 @@ const (
 	FieldRequestID          = "requestId"
 	FieldApplicationContext = "context"
 )
+
+var excludedEnv = map[string]bool{
+	"AWS_ACCESS_KEY_ID":     true,
+	"AWS_SECRET_ACCESS_KEY": true,
+	"AWS_SESSION_TOKEN":     true,
+}
 
 func NewLogger(ctx context.Context) *zap.Logger {
 
@@ -36,7 +43,11 @@ func NewLogger(ctx context.Context) *zap.Logger {
 
 	// DebugEnabled is active when the DEBUG environment variable is set.
 	if _, b := os.LookupEnv("DEBUG"); b {
+		fmt.Printf("DEBUG RequestId: %s Lambda: The Log-Level was set to Debug\n", lc.AwsRequestID)
 		cfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
+		for _, envStr := range os.Environ() {
+			fmt.Println("ENV:", printEnv(envStr, excludedEnv))
+		}
 	}
 
 	logger, err := cfg.Build()
@@ -45,4 +56,12 @@ func NewLogger(ctx context.Context) *zap.Logger {
 	}
 	zap.ReplaceGlobals(logger)
 	return logger
+}
+
+func printEnv(envStr string, excludedEnv map[string]bool) string {
+	env := strings.Split(envStr, "=")
+	if !excludedEnv[env[0]] {
+		return envStr
+	}
+	return fmt.Sprintf("%s=*****<Secret>*****", env[0])
 }
