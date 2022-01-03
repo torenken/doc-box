@@ -98,13 +98,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Attachment_Resp'
         400:
-          description: Bad Request
+          description: 'Bad Request'
+          content:
+            application/json;charset=utf-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+        409:
+          description: 'Conflict'
           content:
             application/json;charset=utf-8:
               schema:
                 $ref: '#/components/schemas/Error'
         500:
-          description: Internal Server Error
+          description: 'Internal Server Error'
           content:
             application/json;charset=utf-8:
               schema:

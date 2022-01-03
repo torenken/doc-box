@@ -105,6 +105,11 @@ This operation create a document attachment entity
 |  <<Error>>
 
 
+| 409
+| Conflict
+|  <<Error>>
+
+
 | 500
 | Internal Server Error
 |  <<Error>>

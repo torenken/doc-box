@@ -1,10 +1,12 @@
 import * as path from 'path';
+import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import { GoBaseFunc } from '../share';
 
 export interface AttachDocumentFuncProps {
   readonly documentBucket: IBucket;
+  readonly documentTable: ITable;
 }
 
 export class AttachDocumentFunc extends GoBaseFunc {
@@ -17,8 +19,10 @@ export class AttachDocumentFunc extends GoBaseFunc {
       memorySize: 1024,
       environment: {
         DOCUMENT_STORAGE_NAME: props.documentBucket.bucketName,
+        DOCUMENT_TABLE_NAME: props.documentTable.tableName,
       },
     });
     props.documentBucket.grantReadWrite(this);
+    props.documentTable.grantReadWriteData(this);
   }
 }

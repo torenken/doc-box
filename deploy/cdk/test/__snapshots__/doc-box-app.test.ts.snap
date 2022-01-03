@@ -59,6 +59,9 @@ Object {
             "DOCUMENT_STORAGE_NAME": Object {
               "Ref": "DocumentBucketAE41E5A9",
             },
+            "DOCUMENT_TABLE_NAME": Object {
+              "Ref": "DocumentTable9FE6D880",
+            },
           },
         },
         "FunctionName": "doc-box-attachDocument",
@@ -162,6 +165,33 @@ Object {
                       "/*",
                     ],
                   ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "DocumentTable9FE6D880",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
                 },
               ],
             },

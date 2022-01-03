@@ -42,21 +42,18 @@ func (u Uploader) Upload(ctx context.Context, attachment domain.Attachment) erro
 		return ErrAttDecode
 	}
 
-	bucket := os.Getenv("DOCUMENT_STORAGE_NAME")
-	key := fmt.Sprintf("%s.pdf", attachment.DocId) //current only one attachment per document
-
-	u.log.Debugf("Upload the attachment in %s and %s bucket.", key, bucket)
-
 	input := &s3.PutObjectInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String(key),
+		Bucket: aws.String(os.Getenv("DOCUMENT_STORAGE_NAME")),
+		Key:    aws.String(fmt.Sprintf("%s.pdf", attachment.DocId)), //current only one attachment per document
 		Body:   bytes.NewBuffer(decodeString),
 	}
 
-	if _, err := u.s3s.PutObject(ctx, input); err != nil {
+	resp, err := u.s3s.PutObject(ctx, input)
+	if err != nil {
 		u.log.Errorf("attachment cannot be saved in s3 storage: %s", err)
 		return ErrAttUpload
 	}
+	u.log.Debugf("The attachment was uploaded successfully: %+v", resp)
 
 	return nil
 }

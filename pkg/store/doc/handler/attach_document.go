@@ -12,13 +12,14 @@ import (
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
-func NewAttachDocumentHandler(s3s cmd.S3Putter, s3p cmd.S3PreSigner, log *zap.SugaredLogger) AttachDocumentHandler {
-	return AttachDocumentHandler{s3s: s3s, s3p: s3p, log: log}
+func NewAttachDocumentHandler(s3s cmd.S3Putter, s3p cmd.S3PreSigner, ddl cmd.DynamoDBGetter, log *zap.SugaredLogger) AttachDocumentHandler {
+	return AttachDocumentHandler{s3s: s3s, s3p: s3p, ddl: ddl, log: log}
 }
 
 type AttachDocumentHandler struct {
 	s3s cmd.S3Putter
 	s3p cmd.S3PreSigner
+	ddl cmd.DynamoDBGetter
 	log *zap.SugaredLogger
 }
 
@@ -32,7 +33,12 @@ func (h AttachDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 	}
 	h.log.Infof("Input validation was successful. Processing document attachment")
 
-	if err := cmd.NewAttachCommand(h.s3s, h.s3p, h.log).Execute(ctx, &attachment); err != nil {
+	if err := cmd.NewAttachCommand(h.s3s, h.s3p, h.ddl, h.log).Execute(ctx, &attachment); err != nil {
+		if errors.Is(err, cmd.ErrDocNotFound) {
+			h.log.Warnf("Failed to attach document. No document with id %s found", attachment.DocId)
+			return failed(http.StatusConflict, err)
+		}
+
 		h.log.Errorf("Failed to attach document: %s", err.Error())
 		return failed(http.StatusInternalServerError, err)
 	}

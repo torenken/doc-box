@@ -27,6 +27,7 @@ export class DocBoxStack extends Stack {
 
     const attachDocumentFunc = new AttachDocumentFunc(this, 'AttachDocumentFunc', {
       documentBucket,
+      documentTable,
     });
 
     const documentApi = new DocumentApi(this, 'DocumentRestApi');

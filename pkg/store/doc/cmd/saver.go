@@ -40,18 +40,17 @@ func (s *Saver) Save(ctx context.Context, doc domain.Document) error {
 		return ErrDocMarshal
 	}
 
-	tableName := os.Getenv("DOCUMENT_TABLE_NAME")
-
-	s.log.Debugf("Save the document in %s table.", tableName)
-
 	input := &dynamodb.PutItemInput{
 		Item:      item,
-		TableName: aws.String(tableName),
+		TableName: aws.String(os.Getenv("DOCUMENT_TABLE_NAME")),
 	}
 
-	if _, err = s.ddb.PutItem(ctx, input); err != nil {
+	resp, err := s.ddb.PutItem(ctx, input)
+	if err != nil {
 		s.log.Errorf("The document cannot be saved in the database: %s", err)
 		return ErrDocSave
 	}
+	s.log.Debugf("The document was saved successfully: %+v", resp)
+
 	return nil
 }

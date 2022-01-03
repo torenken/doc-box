@@ -31,6 +31,9 @@ test('DocBoxStackSnapshot', () => {
         DOCUMENT_STORAGE_NAME: {
           Ref: 'DocumentBucketAE41E5A9',
         },
+        DOCUMENT_TABLE_NAME: {
+          Ref: 'DocumentTable9FE6D880',
+        },
       },
     },
   });

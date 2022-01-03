@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 
 	"github.com/torenken/doc-box/pkg/cfg"
@@ -14,15 +15,17 @@ import (
 var (
 	s3s *s3.Client
 	s3p *s3.PresignClient
+	ddl *dynamodb.Client
 )
 
 func init() {
 	s3s = cfg.NewS3()
 	s3p = cfg.NewS3PreSign()
+	ddl = cfg.NewDynamoDB()
 }
 
 func handle(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return handler.NewAttachDocumentHandler(s3s, s3p, cfg.NewLogger(ctx).Sugar()).Handle(ctx, req)
+	return handler.NewAttachDocumentHandler(s3s, s3p, ddl, cfg.NewLogger(ctx).Sugar()).Handle(ctx, req)
 }
 
 func main() {

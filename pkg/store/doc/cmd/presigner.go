@@ -34,14 +34,9 @@ type PreSigner struct {
 func (p PreSigner) PreSign(ctx context.Context, attachment *domain.Attachment) error {
 	p.log.Debugf("PreSign the attachment with the following parameter: %+v", attachment)
 
-	bucket := os.Getenv("DOCUMENT_STORAGE_NAME")
-	key := fmt.Sprintf("%s.pdf", attachment.DocId) //current only one attachment per document
-
-	p.log.Debugf("PreSign the attachment in %s and %s bucket.", key, bucket)
-
 	input := s3.GetObjectInput{
-		Bucket: aws.String(bucket),
-		Key:    aws.String(key),
+		Bucket: aws.String(os.Getenv("DOCUMENT_STORAGE_NAME")),
+		Key:    aws.String(fmt.Sprintf("%s.pdf", attachment.DocId)), //current only one attachment per document,
 	}
 
 	resp, err := p.s3s.PresignGetObject(ctx, &input)
@@ -49,8 +44,8 @@ func (p PreSigner) PreSign(ctx context.Context, attachment *domain.Attachment) e
 		p.log.Errorf("preSigned url cannot be created: %s", err)
 		return ErrAttPreSign
 	}
-
 	attachment.Url = resp.URL
+	p.log.Debugf("The attachment was presigned successfully: %+v", resp)
 
 	return nil
 }
