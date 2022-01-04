@@ -46,7 +46,7 @@ func NewLogger(ctx context.Context) *zap.Logger {
 		fmt.Printf("DEBUG RequestId: %s Lambda: The Log-Level was set to Debug\n", lc.AwsRequestID)
 		cfg.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 		for _, envStr := range os.Environ() {
-			fmt.Println("ENV:", printEnv(envStr, excludedEnv))
+			fmt.Printf("DEBUG RequestId: %s Env: %s\n", lc.AwsRequestID, printEnv(envStr, excludedEnv))
 		}
 	}
 
