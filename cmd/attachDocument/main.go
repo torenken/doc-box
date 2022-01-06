@@ -15,17 +15,17 @@ import (
 var (
 	s3s *s3.Client
 	s3p *s3.PresignClient
-	ddl *dynamodb.Client
+	ddb *dynamodb.Client
 )
 
 func init() {
 	s3s = cfg.NewS3()
 	s3p = cfg.NewS3PreSign()
-	ddl = cfg.NewDynamoDB()
+	ddb = cfg.NewDynamoDB()
 }
 
 func handle(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return handler.NewAttachDocumentHandler(s3s, s3p, ddl, cfg.NewLogger(ctx).Sugar()).Handle(ctx, req)
+	return handler.NewAttachDocumentHandler(s3s, s3p, ddb, cfg.NewLogger(ctx).Sugar()).Handle(ctx, req)
 }
 
 func main() {
