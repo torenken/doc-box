@@ -15,8 +15,8 @@ type DynamoDBAPI interface {
 	DynamoDBPutter
 }
 
-func NewCreateCommand(ddb DynamoDBAPI, log *zap.SugaredLogger) *CreateCommand {
-	return &CreateCommand{ddb: ddb, log: log}
+func NewCreateCommand(ddb DynamoDBAPI, log *zap.SugaredLogger) CreateCommand {
+	return CreateCommand{ddb: ddb, log: log}
 }
 
 type CreateCommand struct {
@@ -24,7 +24,7 @@ type CreateCommand struct {
 	log *zap.SugaredLogger
 }
 
-func (c *CreateCommand) Execute(ctx context.Context, doc domain.Document) error {
+func (c CreateCommand) Execute(ctx context.Context, doc domain.Document) error {
 	if err := NewSaver(c.ddb, c.log).Save(ctx, doc); err != nil {
 		c.log.Errorf("Failed to save the document. %s", err.Error())
 		return ErrDocCreate
