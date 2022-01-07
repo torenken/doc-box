@@ -23,16 +23,18 @@ type AttachCommand struct {
 }
 
 func (a AttachCommand) Execute(ctx context.Context, attachment *domain.Attachment) error {
+	a.log.Infof("Perform attachment processing with documentId %s.", attachment.DocId)
 
 	document, err := NewLoader(a.ddb, a.log).Load(ctx, attachment.DocId)
 	if err != nil {
-		a.log.Errorf("The attachment cannot be loaded: %s", err)
+		a.log.Errorf("The document cannot be loaded: %s", err)
 		return ErrDocLoader
 	}
 
 	if (domain.Document{}) == document {
 		return ErrDocNotFound
 	}
+	a.log.Infof("The document was successful loaded.")
 
 	if err := NewUploader(a.s3s, a.log).Upload(ctx, *attachment); err != nil {
 		a.log.Errorf("The attachment cannot be uploaded: %s", err)
