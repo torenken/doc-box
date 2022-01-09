@@ -1,5 +1,6 @@
 include ./Makefile.Common
 
+AWS_PROFILE := ##set aws profile name
 NAME := doc-box
 LAMBDA_DIR := ./cmd
 BUILD_DIR := ./build
@@ -33,7 +34,7 @@ zip-%:
 	zip -j ${BUILD_DIR}/$*/bootstrap.zip ${BUILD_DIR}/$*/bootstrap
 
 deploy-%:
-	aws lambda update-function-code --function-name ${NAME}-$* --zip-file fileb://${BUILD_DIR}/$*/bootstrap.zip --no-cli-pager
+	aws lambda update-function-code --function-name ${NAME}-$* --zip-file fileb://${BUILD_DIR}/$*/bootstrap.zip --no-cli-pager --profile ${AWS_PROFILE}
 
 $(ALL_LAMBDAS):
 	$(MAKE) build-$@
