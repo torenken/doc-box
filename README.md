@@ -32,6 +32,15 @@ See **deploy/cdk/README.md** for build of the AWS CDK project.
 ### Installing dependencies & building the target
 The used build management tool is Make, all Make commands are executed in the root folder.
 
+#### Installing build tools (initial)
+Before build, the tools [go-impi](https://github.com/pavius/impi/cmd/impi) and 
+[golangci-lint](https://github.com/golangci/golangci-lint) must be installed.
+
+With the following command the tools can be installed
+```shell
+$ make install-tools
+```
+
 #### Building the target
 Complete Build of Golang project via Makefile
 ```shell
