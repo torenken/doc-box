@@ -48,3 +48,9 @@ gotidy:
 .PHONY: gotest
 gotest:
 	$(GO_TEST) -v ./...
+
+.PHONY: install-tools
+install-tools:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+	go install golang.org/x/tools/cmd/goimports@latest
+	go install github.com/pavius/impi/cmd/impi@latest
