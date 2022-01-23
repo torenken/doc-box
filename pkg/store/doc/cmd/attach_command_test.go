@@ -26,14 +26,14 @@ func TestAttachCommand(t *testing.T) {
 
 	t.Run("error while loading document", func(t *testing.T) {
 		ddb := &MockDynamo{ErrGetItem: technicalErr}
-		err := NewAttachCommand(nil, nil, ddb, logger).Execute(ctx, &att)
+		_, err := NewAttachCommand(nil, nil, ddb, logger).Execute(ctx, att)
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrDocLoader)
 	})
 
 	t.Run("no document found in database found", func(t *testing.T) {
 		ddb := &MockDynamo{GetItemOut: GenDocItemOutput(domain.Document{})}
-		err := NewAttachCommand(nil, nil, ddb, logger).Execute(ctx, &att)
+		_, err := NewAttachCommand(nil, nil, ddb, logger).Execute(ctx, att)
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrDocNotFound)
 	})
@@ -42,7 +42,7 @@ func TestAttachCommand(t *testing.T) {
 		ddb := &MockDynamo{GetItemOut: GenDocItemOutput(doc)}
 		s3s := &MockS3{ErrPutObj: technicalErr}
 
-		err := NewAttachCommand(s3s, nil, ddb, logger).Execute(ctx, &att)
+		_, err := NewAttachCommand(s3s, nil, ddb, logger).Execute(ctx, att)
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrAttUpload)
 	})
@@ -52,7 +52,7 @@ func TestAttachCommand(t *testing.T) {
 		s3s := &MockS3{PutObjOut: &s3.PutObjectOutput{}}
 		s3p := &MockS3PreSign{ErrGetObj: technicalErr}
 
-		err := NewAttachCommand(s3s, s3p, ddb, logger).Execute(ctx, &att)
+		_, err := NewAttachCommand(s3s, s3p, ddb, logger).Execute(ctx, att)
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrAttPreSign)
 	})
@@ -62,8 +62,8 @@ func TestAttachCommand(t *testing.T) {
 		s3s := &MockS3{PutObjOut: &s3.PutObjectOutput{}}
 		s3p := &MockS3PreSign{PutObjOut: &preSignedRequest}
 
-		err := NewAttachCommand(s3s, s3p, ddb, logger).Execute(ctx, &att)
+		preSigned, err := NewAttachCommand(s3s, s3p, ddb, logger).Execute(ctx, att)
 		assert.NoError(t, err)
-		assert.Equal(t, att.Url, url)
+		assert.Equal(t, preSigned.Url, url)
 	})
 }

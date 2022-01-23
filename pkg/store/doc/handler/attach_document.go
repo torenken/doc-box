@@ -33,7 +33,8 @@ func (h AttachDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 	}
 	h.log.Infof("Input validation was successful. Processing document attachment")
 
-	if err := cmd.NewAttachCommand(h.s3s, h.s3p, h.ddb, h.log).Execute(ctx, &attachment); err != nil {
+	preSigned, err := cmd.NewAttachCommand(h.s3s, h.s3p, h.ddb, h.log).Execute(ctx, attachment)
+	if err != nil {
 		if errors.Is(err, cmd.ErrDocNotFound) {
 			h.log.Warnf("Failed to attach document. No document with id %s found", attachment.DocId)
 			return failed(http.StatusConflict, err)
@@ -43,8 +44,8 @@ func (h AttachDocumentHandler) Handle(ctx context.Context, req events.APIGateway
 		return failed(http.StatusInternalServerError, err)
 	}
 
-	h.log.Infof("The attachment was created successfully with preSigned url: %s.", attachment.Url)
-	return successfullyCreated(attachment, req)
+	h.log.Infof("The attachment was created successfully with preSigned url: %s.", preSigned.Url)
+	return successfullyCreated(preSigned, req)
 }
 
 func validateAndMapAttachment(req events.APIGatewayProxyRequest) (domain.Attachment, error) {

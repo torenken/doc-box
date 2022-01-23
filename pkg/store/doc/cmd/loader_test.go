@@ -28,7 +28,7 @@ func TestGetterIntegration(t *testing.T) {
 		assert.Equal(t, "4b69ddf3-69fe-481c-a4e5-4e54456f6284", doc.Id)
 	})
 
-	t.Run("empty document when no task with id", func(t *testing.T) {
+	t.Run("empty document when no doc found", func(t *testing.T) {
 		ddb := cfg.NewLocalDynamoDB("http://127.0.0.1:4566")
 
 		doc, err := NewLoader(ddb, logger).Load(context.TODO(), "no-doc-id")
