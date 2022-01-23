@@ -56,6 +56,12 @@ create_document_table() {
 	msg "successful: creating docbox-document-table..."
 }
 
+insert_document_data() {
+  msg "inserting document-data into table..."
+  db=$($aws_local dynamodb put-item --table-name docbox-document --item file://docbox-document-items.json --return-consumed-capacity TOTAL)
+  msg "successful: inserting document-data into table..."
+}
+
 delete_document_table() {
   msg "deleting docbox-document-table..."
   db=$($aws_local dynamodb delete-table --table-name docbox-document)
@@ -66,12 +72,17 @@ create_table() {
   create_document_table
 }
 
+insert_data() {
+  insert_document_data
+}
+
 delete_table() {
   delete_document_table
 }
 
 create() {
   create_table
+  insert_data
   exit
 }
 

@@ -1,0 +1,7 @@
+{
+  "id": { "S": "4b69ddf3-69fe-481c-a4e5-4e54456f6284" },
+  "type": { "S": "offer" },
+  "name": { "S": "fibre-product:new-year-special" },
+  "lifecycleState": { "S": "Active" },
+  "creationDate": { "S": "1995-04-25T00:00:00Z" }
+}
