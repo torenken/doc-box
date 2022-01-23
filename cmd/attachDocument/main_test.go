@@ -14,9 +14,9 @@ func TestHandler(t *testing.T) {
 		AwsRequestID: "a3e1ca18-bca8-15ec-6519-1252bc231063",
 	})
 
-	t.Run("request body is empty", func(t *testing.T) {
+	t.Run("no id set", func(t *testing.T) {
 		response, err := handle(ctx, events.APIGatewayProxyRequest{})
 		assert.NoError(t, err)
-		assert.Contains(t, response.Body, "the given body does not match to api")
+		assert.Contains(t, response.Body, "the path parameter docId was missing")
 	})
 }
