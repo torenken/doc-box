@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 trap cleanup SIGINT SIGTERM ERR EXIT
 
-aws_profile=##set aws profile name
+aws_profile= # configure aws profile here
 
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 aws_local="aws --profile $aws_profile --endpoint-url http://localhost:4566"
