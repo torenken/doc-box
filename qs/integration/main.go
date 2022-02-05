@@ -4,6 +4,7 @@ import (
 	"context"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -27,13 +28,23 @@ func main() {
 	}
 	client := config.Client(ctx)
 
-	resp, err := client.Post(createDocUrl, "application/json", strings.NewReader("{\n    \"name\": \"fibre-product:new-year-special\",\n    \"type\": \"offer\"\n}"))
-	logger.Printf("main: API-Calling : Client is calling the document api: url %v", createDocUrl)
+	req, err := http.NewRequest("POST", createDocUrl, strings.NewReader("{\n    \"name\": \"fibre-product:new-year-special\",\n    \"type\": \"offer\"\n}"))
+	if err != nil {
+		logger.Printf("main: API-Request : Error: %v", err.Error())
+		panic(err)
+	}
 
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("x-api-key", "todo")
+
+	resp, err := client.Do(req)
 	if err != nil {
 		logger.Printf("main: API-Calling : Error: %v", err.Error())
 		panic(err)
 	}
+
+	logger.Printf("main: API-Calling : Client is calling the document api: url %v", createDocUrl)
+
 	bodyBytes, _ := ioutil.ReadAll(resp.Body)
 	logger.Printf("main: API-Calling : Client response: %v", string(bodyBytes))
 }
