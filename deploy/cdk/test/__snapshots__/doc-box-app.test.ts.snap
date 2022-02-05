@@ -368,6 +368,25 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
+    "DocumentCognitoUserPoolsAuthorizer720A0112": Object {
+      "Properties": Object {
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": "DocBoxStackDocumentCognitoUserPoolsAuthorizer86B00695",
+        "ProviderARNs": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "DocumentUserPoolD7239797",
+              "Arn",
+            ],
+          },
+        ],
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+        "Type": "COGNITO_USER_POOLS",
+      },
+      "Type": "AWS::ApiGateway::Authorizer",
+    },
     "DocumentRestApi6062B97A": Object {
       "Properties": Object {
         "BinaryMediaTypes": Array [
@@ -427,7 +446,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "DocumentRestApiDeployment5C15C8B8711f929fa53b836d2d4aa57194d9b00d": Object {
+    "DocumentRestApiDeployment5C15C8B80091518ec370f554000f150908cc3cd9": Object {
       "DependsOn": Array [
         "DocumentRestApidocumentManagementdocumentdocIdattachmentPOST615DB99D",
         "DocumentRestApidocumentManagementdocumentdocIdattachmentFDAEFEFD",
@@ -459,7 +478,7 @@ Object {
           "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"user\\":\\"$context.identity.user\\",\\"caller\\":\\"$context.identity.caller\\",\\"requestTime\\":\\"$context.requestTime\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"resourcePath\\":\\"$context.resourcePath\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\"}",
         },
         "DeploymentId": Object {
-          "Ref": "DocumentRestApiDeployment5C15C8B8711f929fa53b836d2d4aa57194d9b00d",
+          "Ref": "DocumentRestApiDeployment5C15C8B80091518ec370f554000f150908cc3cd9",
         },
         "RestApiId": Object {
           "Ref": "DocumentRestApi6062B97A",
@@ -497,7 +516,13 @@ Object {
     },
     "DocumentRestApidocumentManagementdocumentPOSTAD0AE468": Object {
       "Properties": Object {
-        "AuthorizationType": "NONE",
+        "AuthorizationScopes": Array [
+          "subscriber/docbox",
+        ],
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": Object {
+          "Ref": "DocumentCognitoUserPoolsAuthorizer720A0112",
+        },
         "HttpMethod": "POST",
         "Integration": Object {
           "IntegrationHttpMethod": "POST",
@@ -777,6 +802,81 @@ Object {
       },
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Retain",
+    },
+    "DocumentUserPoolD7239797": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccountRecoverySetting": Object {
+          "RecoveryMechanisms": Array [
+            Object {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            Object {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": Object {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "VerificationMessageTemplate": Object {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DocumentUserPoolDocumentClientFC18D5CC": Object {
+      "Properties": Object {
+        "AllowedOAuthFlows": Array [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "subscriber/docbox",
+        ],
+        "GenerateSecret": true,
+        "SupportedIdentityProviders": Array [
+          "COGNITO",
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "DocumentUserPoolDocumentDomainEDA07E73": Object {
+      "Properties": Object {
+        "Domain": "docbox",
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolDomain",
+    },
+    "DocumentUserPoolDocumentResourceServer3852BE5A": Object {
+      "Properties": Object {
+        "Identifier": "subscriber",
+        "Name": "subscriber",
+        "Scopes": Array [
+          Object {
+            "ScopeDescription": "docbox-endpoint",
+            "ScopeName": "docbox",
+          },
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolResourceServer",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
       "DependsOn": Array [

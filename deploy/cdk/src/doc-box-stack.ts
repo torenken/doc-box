@@ -1,7 +1,8 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
-import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
+import { AuthorizationType, CognitoUserPoolsAuthorizer, LambdaIntegration } from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 import { AttachDocumentFunc, CreateDocumentFunc, DocumentApi, DocumentBucket, DocumentTable } from './docbox';
+import { DocumentUserPool } from './docbox/document-user-pool';
 
 export interface DocBoxStackProps extends StackProps {
   /**
@@ -30,12 +31,22 @@ export class DocBoxStack extends Stack {
       documentTable,
     });
 
+    const documentUserPool = new DocumentUserPool(this, 'DocumentUserPool');
+
+    const cognitoUserPoolsAuthorizer = new CognitoUserPoolsAuthorizer(this, 'DocumentCognitoUserPoolsAuthorizer', {
+      cognitoUserPools: [documentUserPool],
+    });
+
     const documentApi = new DocumentApi(this, 'DocumentRestApi');
     const documentResource = documentApi.root.addResource('documentManagement').addResource('document');
     const showDocumentResource = documentResource.addResource('{docId}');
     const attachmentResource = showDocumentResource.addResource('attachment');
 
-    documentResource.addMethod('POST', new LambdaIntegration(createDocumentFunc));
+    documentResource.addMethod('POST', new LambdaIntegration(createDocumentFunc), {
+      authorizationScopes: ['subscriber/docbox'],
+      authorizationType: AuthorizationType.COGNITO,
+      authorizer: cognitoUserPoolsAuthorizer,
+    });
     attachmentResource.addMethod('POST', new LambdaIntegration(attachDocumentFunc));
   }
 }
