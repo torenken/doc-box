@@ -1,6 +1,6 @@
 const { awscdk } = require('projen');
 
-const cdkVersion = '2.10.0';
+const cdkVersion = '2.12.0';
 const appName = 'torenken-doc-box';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
