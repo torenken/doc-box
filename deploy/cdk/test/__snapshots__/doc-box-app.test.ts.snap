@@ -344,7 +344,7 @@ Object {
           "ExcludePunctuation": true,
           "GenerateStringKey": "api_key",
           "PasswordLength": 64,
-          "SecretStringTemplate": "{\\"user\\":\\"test123456\\",\\"api_key_2\\":\\"QrSA19gIxv15nGM9UpRfPkrrEdB1BPVpOziY4qhBkCFfS1fnWvXjSt1CgM28W0rc\\"}",
+          "SecretStringTemplate": "{\\"user\\":\\"test123456\\"}",
         },
         "KmsKeyId": Object {
           "Fn::GetAtt": Array [
@@ -547,10 +547,10 @@ Object {
       },
       "Type": "AWS::ApiGateway::UsagePlan",
     },
-    "DocumentDevUsagePlanUsagePlanKeyResourceDocBoxStackDocumentRestApiDevApiKey2B789AB7F33E419A9": Object {
+    "DocumentDevUsagePlanUsagePlanKeyResourceDocBoxStackDocumentRestApiDevApiKey097B2421ADE0E345": Object {
       "Properties": Object {
         "KeyId": Object {
-          "Ref": "DocumentRestApiDevApiKey25D4FD1CF",
+          "Ref": "DocumentRestApiDevApiKey9DA53DBC",
         },
         "KeyType": "API_KEY",
         "UsagePlanId": Object {
@@ -618,7 +618,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "DocumentRestApiDeployment5C15C8B8334b3b58dff2a6f3fed38decbfebc5ac": Object {
+    "DocumentRestApiDeployment5C15C8B864e3941456de33b6202e32d292580844": Object {
       "DependsOn": Array [
         "DocumentRestApidocumentManagementdocumentdocIdattachmentPOST615DB99D",
         "DocumentRestApidocumentManagementdocumentdocIdattachmentFDAEFEFD",
@@ -650,7 +650,7 @@ Object {
           "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"user\\":\\"$context.identity.user\\",\\"caller\\":\\"$context.identity.caller\\",\\"requestTime\\":\\"$context.requestTime\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"resourcePath\\":\\"$context.resourcePath\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\"}",
         },
         "DeploymentId": Object {
-          "Ref": "DocumentRestApiDeployment5C15C8B8334b3b58dff2a6f3fed38decbfebc5ac",
+          "Ref": "DocumentRestApiDeployment5C15C8B864e3941456de33b6202e32d292580844",
         },
         "RestApiId": Object {
           "Ref": "DocumentRestApi6062B97A",
@@ -659,9 +659,8 @@ Object {
       },
       "Type": "AWS::ApiGateway::Stage",
     },
-    "DocumentRestApiDevApiKey25D4FD1CF": Object {
+    "DocumentRestApiDevApiKey9DA53DBC": Object {
       "Properties": Object {
-        "Description": "hello",
         "Enabled": true,
         "StageKeys": Array [
           Object {
@@ -681,7 +680,7 @@ Object {
               Object {
                 "Ref": "DevSecret61FBB390",
               },
-              ":SecretString:api_key_2::}}",
+              ":SecretString:api_key::}}",
             ],
           ],
         },
@@ -866,7 +865,14 @@ Object {
     },
     "DocumentRestApidocumentManagementdocumentdocIdattachmentPOST615DB99D": Object {
       "Properties": Object {
-        "AuthorizationType": "NONE",
+        "ApiKeyRequired": true,
+        "AuthorizationScopes": Array [
+          "subscriber/attachbox",
+        ],
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": Object {
+          "Ref": "DocumentCognitoUserPoolsAuthorizer720A0112",
+        },
         "HttpMethod": "POST",
         "Integration": Object {
           "IntegrationHttpMethod": "POST",
@@ -1073,12 +1079,36 @@ Object {
             "ScopeDescription": "docbox-endpoint",
             "ScopeName": "docbox",
           },
+          Object {
+            "ScopeDescription": "attachbox-endpoint",
+            "ScopeName": "attachbox",
+          },
         ],
         "UserPoolId": Object {
           "Ref": "DocumentUserPoolD7239797",
         },
       },
       "Type": "AWS::Cognito::UserPoolResourceServer",
+    },
+    "DocumentUserPoolPersonalClient003B778B": Object {
+      "Properties": Object {
+        "AllowedOAuthFlows": Array [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "subscriber/docbox",
+          "subscriber/attachbox",
+        ],
+        "GenerateSecret": true,
+        "SupportedIdentityProviders": Array [
+          "COGNITO",
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
       "DependsOn": Array [

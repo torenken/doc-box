@@ -16,10 +16,16 @@ export class DocumentUserPool extends UserPool {
 
     this.addResourceServer('DocumentResourceServer', {
       identifier: 'subscriber',
-      scopes: [{
-        scopeName: 'docbox',
-        scopeDescription: 'docbox-endpoint',
-      }],
+      scopes: [
+        {
+          scopeName: 'docbox',
+          scopeDescription: 'docbox-endpoint',
+        },
+        {
+          scopeName: 'attachbox',
+          scopeDescription: 'attachbox-endpoint',
+        },
+      ],
     });
     this.addClient('DocumentClient', {
       generateSecret: true,
@@ -28,6 +34,18 @@ export class DocumentUserPool extends UserPool {
           clientCredentials: true,
         },
         scopes: [OAuthScope.custom('subscriber/docbox')],
+      },
+    });
+    this.addClient('PersonalClient', {
+      generateSecret: true,
+      oAuth: {
+        flows: {
+          clientCredentials: true,
+        },
+        scopes: [
+          OAuthScope.custom('subscriber/docbox'),
+          OAuthScope.custom('subscriber/attachbox'),
+        ],
       },
     });
   }

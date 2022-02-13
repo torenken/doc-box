@@ -69,6 +69,11 @@ export class DocBoxStack extends Stack {
       authorizer: cognitoUserPoolsAuthorizer,
       apiKeyRequired: true,
     });
-    attachmentResource.addMethod('POST', new LambdaIntegration(attachDocumentFunc));
+    attachmentResource.addMethod('POST', new LambdaIntegration(attachDocumentFunc), {
+      authorizationScopes: ['subscriber/attachbox'],
+      authorizationType: AuthorizationType.COGNITO,
+      authorizer: cognitoUserPoolsAuthorizer,
+      apiKeyRequired: true,
+    });
   }
 }
