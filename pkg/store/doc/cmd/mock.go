@@ -8,7 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 
-	"github.com/torenken/doc-box/pkg/store/doc/domain"
+	"github.com/torenken/doc-box/pkg/store/doc/cmd/entity"
 )
 
 type MockDynamo struct {
@@ -31,7 +31,7 @@ func (m *MockDynamo) PutItem(ctx context.Context, params *dynamodb.PutItemInput,
 	return m.PutItemOut, m.ErrPutItem
 }
 
-func GenDocItemOutput(doc domain.Document) *dynamodb.GetItemOutput {
+func GenDocItemOutput(doc entity.Document) *dynamodb.GetItemOutput {
 	item, _ := attributevalue.MarshalMap(doc)
 	return &dynamodb.GetItemOutput{
 		Item: item,

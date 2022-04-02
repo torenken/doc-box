@@ -3,12 +3,12 @@ package domain
 import (
 	"time"
 
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
 func NewDocument(Name, DocType string) Document {
 	return Document{
-		Id:             uuid.NewV4().String(),
+		Id:             uuid.NewString(),
 		Name:           Name,
 		Type:           DocType,
 		LifecycleState: "Active",

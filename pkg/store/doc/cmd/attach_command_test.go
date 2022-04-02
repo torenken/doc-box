@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 
+	"github.com/torenken/doc-box/pkg/store/doc/cmd/entity"
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
@@ -19,7 +20,7 @@ func TestAttachCommand(t *testing.T) {
 	ctx := context.Background()
 	technicalErr := errors.New("expect Smithy http.Request value as input, got unsupported type")
 
-	doc := domain.NewDocument("fibre-product:new-year-special", "offer")
+	doc, _ := entity.Encrypt(domain.NewDocument("fibre-product:new-year-special", "offer"))
 	att := domain.NewAttachment(doc.Id, "ZGF0YQo=")
 	url := "https://secret-url.de/"
 	preSignedRequest := v4.PresignedHTTPRequest{URL: url, Method: "GET"}
@@ -32,7 +33,7 @@ func TestAttachCommand(t *testing.T) {
 	})
 
 	t.Run("no document found in database found", func(t *testing.T) {
-		ddb := &MockDynamo{GetItemOut: GenDocItemOutput(domain.Document{})}
+		ddb := &MockDynamo{GetItemOut: GenDocItemOutput(entity.Document{})}
 		_, err := NewAttachCommand(nil, nil, ddb, logger).Execute(ctx, att)
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrDocNotFound)

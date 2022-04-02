@@ -14,6 +14,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/torenken/doc-box/pkg/store/doc/cmd"
+	"github.com/torenken/doc-box/pkg/store/doc/cmd/entity"
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
@@ -23,6 +24,8 @@ func TestAttachDocumentHandler(t *testing.T) {
 	apiRequest := events.APIGatewayProxyRequest{PathParameters: map[string]string{
 		"docId": "9c3af35a-0c85-4e0c-82ec-9ee5ffa337da"},
 	}
+
+	doc, _ := entity.Encrypt(domain.Document{Id: "9c3af35a-0c85-4e0c-82ec-9ee5ffa337da"})
 
 	ctx := context.Background()
 	logger := zap.S()
@@ -43,7 +46,7 @@ func TestAttachDocumentHandler(t *testing.T) {
 		{
 			scenario:         "no document found in database",
 			req:              apiRequest,
-			ddb:              &cmd.MockDynamo{GetItemOut: cmd.GenDocItemOutput(domain.Document{})},
+			ddb:              &cmd.MockDynamo{GetItemOut: cmd.GenDocItemOutput(entity.Document{})},
 			expectStatusCode: http.StatusConflict,
 		},
 		{
@@ -55,7 +58,7 @@ func TestAttachDocumentHandler(t *testing.T) {
 		{
 			scenario:         "successfully created",
 			req:              apiRequest,
-			ddb:              &cmd.MockDynamo{GetItemOut: cmd.GenDocItemOutput(domain.Document{Id: "9c3af35a-0c85-4e0c-82ec-9ee5ffa337da"})},
+			ddb:              &cmd.MockDynamo{GetItemOut: cmd.GenDocItemOutput(doc)},
 			s3s:              &cmd.MockS3{PutObjOut: &s3.PutObjectOutput{}},
 			s3p:              &cmd.MockS3PreSign{PutObjOut: &v4.PresignedHTTPRequest{URL: "https://"}},
 			expectStatusCode: http.StatusCreated,
