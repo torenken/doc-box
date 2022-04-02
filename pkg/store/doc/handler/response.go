@@ -15,7 +15,7 @@ func successfullyCreated(response interface{}, req events.APIGatewayProxyRequest
 	switch v := response.(type) {
 	case domain.Document:
 		return mapResponse(http.StatusCreated, mapper.ToDocumentResp(v, req))
-	case domain.Attachment:
+	case domain.PreSignedUrl:
 		return mapResponse(http.StatusCreated, mapper.ToAttachmentResp(v))
 	default:
 		return failed(http.StatusInternalServerError, errors.New("error during the creation response"))

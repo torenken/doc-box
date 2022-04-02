@@ -1,14 +1,22 @@
 #golang tools
 
-# Name of Package (see go.mod)
-MODULE := github.com/torenken/doc-box
+# Name of local package (see go.mod)
+LOCAL_IMPORT := github.com/torenken/doc-box
 
 ALL_SRC_DIRS := $(shell go list -f {{.Dir}} ./...)
+ALL_BUSINESS_SRC_DIRS := $(shell go list ./... | grep 'pkg/store' | grep -v 'domain')
 
 # go commands
 GO_TEST := go test
+GO_TEST_OPT := -race -timeout 5s
+GO_TEST_OPT_WITH_COVERAGE := $(GO_TEST_OPT) -coverprofile=coverage.txt -covermode=atomic
+GO_TEST_INTEGRATION_OPT := -race -timeout 10s
+GO_TEST_OPT_WITH_INTEGRATION := $(GO_TEST_INTEGRATION_OPT) -coverprofile=integration-coverage.txt -covermode=atomic
+
 GO_LIST := go list
 GO_MOD := go mod
+
+# test conf
 
 # external-tools
 GO_FMT := gofmt
@@ -24,12 +32,12 @@ common: goimpi golint
 .PHONY: goimpi
 goimpi:
 	@echo "running $(IMPI) and verifying golang import directives"
-	$(IMPI) --local $(MODULE) --scheme stdThirdPartyLocal $(ALL_SRC_DIRS)
+	$(IMPI) --local $(LOCAL_IMPORT) --scheme stdThirdPartyLocal $(ALL_SRC_DIRS)
 
 .PHONY: gofmt
 gofmt:
 	$(GO_FMT) -w -s $(ALL_SRC_DIRS)
-	$(GO_IMPORTS) -v -w  -local $(MODULE) $(ALL_SRC_DIRS)
+	$(GO_IMPORTS) -v -w  -local $(LOCAL_IMPORT) $(ALL_SRC_DIRS)
 
 .PHONY: golint
 golint:
@@ -48,3 +56,9 @@ gotidy:
 .PHONY: gotest
 gotest:
 	$(GO_TEST) -v ./...
+
+.PHONY: install-tools
+install-tools:
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+	go install golang.org/x/tools/cmd/goimports@latest
+	go install github.com/pavius/impi/cmd/impi@latest

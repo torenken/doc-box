@@ -31,7 +31,7 @@ type PreSigner struct {
 	log *zap.SugaredLogger
 }
 
-func (p PreSigner) PreSign(ctx context.Context, attachment *domain.Attachment) error {
+func (p PreSigner) PreSign(ctx context.Context, attachment domain.Attachment) (domain.PreSignedUrl, error) {
 	p.log.Debugf("PreSign the attachment with the following parameter: %+v", attachment)
 
 	input := s3.GetObjectInput{
@@ -42,10 +42,9 @@ func (p PreSigner) PreSign(ctx context.Context, attachment *domain.Attachment) e
 	resp, err := p.s3s.PresignGetObject(ctx, &input)
 	if err != nil {
 		p.log.Errorf("preSigned url cannot be created: %s", err)
-		return ErrAttPreSign
+		return domain.PreSignedUrl{}, ErrAttPreSign
 	}
-	attachment.Url = resp.URL
 	p.log.Debugf("The attachment was presigned successfully: %+v", resp)
 
-	return nil
+	return domain.PreSignedUrl{Url: resp.URL}, nil
 }

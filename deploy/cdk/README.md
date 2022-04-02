@@ -5,7 +5,6 @@ This is the AWS CDK project creating the infrastructure needed for Doc Box.
 * Unix System environment
 * [Node.js](https://nodejs.org/en/download/)
 * [Yarn - Package Manager](https://yarnpkg.com/)
-* [Assume-Role](https://github.com/remind101/assume-role)
 
 ## Getting Started
 
@@ -40,11 +39,14 @@ $ yarn audit:level-high
 $ yarn audit:dev-level-critical
 ```
 
-## Deploying manually lambda function on development stack
-Before deploying, the following command must be executed to set the environment variables for assume-role.
+## Deploy the stack
+Execute the cdk deployment:
 ```shell
-$ assume-role [dev-account]
+$ yarn cdk deploy --profile <<aws-account-profile>>
 ```
+
+## Deploying manually lambda function on development stack
+Before deploying, you should be edited the Makefile on the root folder and set the AWS_PROFILE variable.
 
 ### Build and deploy the lambda functions
 The build and deploy of the lambda functions can the done on the root folder with:

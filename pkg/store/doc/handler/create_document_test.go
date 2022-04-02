@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 
@@ -18,6 +19,10 @@ func TestCreateDocumentHandler(t *testing.T) {
 	ctx := context.Background()
 	logger := zap.S()
 
+	apiRequest := events.APIGatewayProxyRequest{
+		Body: "{\"name\": \"fibre-product:new-year-special\",\"type\": \"offer\"}",
+	}
+
 	cases := []struct {
 		scenario         string
 		ddb              cmd.DynamoDBAPI
@@ -25,20 +30,20 @@ func TestCreateDocumentHandler(t *testing.T) {
 		expectStatusCode int
 	}{
 		{
-			scenario:         "no request body empty",
+			scenario:         "request body is empty",
 			req:              events.APIGatewayProxyRequest{},
 			expectStatusCode: http.StatusBadRequest,
 		},
 		{
 			scenario:         "error on document saving",
-			ddb:              &cmd.MockDynamo{ErrPut: errors.New("")},
-			req:              events.APIGatewayProxyRequest{Body: "{\"name\": \"fibre-product:new-year-special\",\"type\": \"offer\"}"},
+			ddb:              &cmd.MockDynamo{ErrPutItem: errors.New("error from dynamodb")},
+			req:              apiRequest,
 			expectStatusCode: http.StatusInternalServerError,
 		},
 		{
 			scenario:         "document request body",
-			ddb:              &cmd.MockDynamo{},
-			req:              events.APIGatewayProxyRequest{Body: "{\"name\": \"fibre-product:new-year-special\",\"type\": \"offer\"}"},
+			ddb:              &cmd.MockDynamo{PutItemOut: &dynamodb.PutItemOutput{}},
+			req:              apiRequest,
 			expectStatusCode: http.StatusCreated,
 		},
 	}

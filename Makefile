@@ -1,11 +1,11 @@
 include ./Makefile.Common
 
-AWS_PROFILE := ##set aws profile name
+AWS_PROFILE := # configure aws profile here
 NAME := doc-box
 LAMBDA_DIR := ./cmd
 BUILD_DIR := ./build
 
-# List of aws lambda functions (see cmd folder)
+# list of aws lambda functions (see cmd folder)
 ALL_LAMBDAS = \
 	createDocument \
 	attachDocument
@@ -40,3 +40,19 @@ $(ALL_LAMBDAS):
 	$(MAKE) build-$@
 	$(MAKE) zip-$@
 	$(MAKE) deploy-$@
+
+.PHONY: unit-tests-with-cover
+unit-tests-with-cover:
+	@echo "running go unit test + coverage in `pwd`"
+	@$(GO_TEST) $(GO_TEST_OPT_WITH_COVERAGE) $(ALL_BUSINESS_SRC_DIRS)
+	go tool cover -html=coverage.txt -o coverage.html
+
+.PHONY: integration-tests-with-cover
+integration-tests-with-cover:
+	@if [ -z "${AWS_SESSION_TOKEN}" ]; then \
+		echo "Missing aws secret token. Please run \"assume-role\" with your profile."; \
+		exit 1; \
+	fi
+	@echo "running go integration test coverage in `pwd`"
+	$(GO_TEST) $(GO_TEST_OPT_WITH_INTEGRATION) $(ALL_BUSINESS_SRC_DIRS)
+	go tool cover -html=integration-coverage.txt -o integration-coverage.html

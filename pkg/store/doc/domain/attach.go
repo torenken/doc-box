@@ -10,5 +10,8 @@ func NewAttachment(docId, data string) Attachment {
 type Attachment struct {
 	DocId string `json:"docId"`
 	Data  string `json:"data"`
-	Url   string `json:"url"`
+}
+
+type PreSignedUrl struct {
+	Url string `json:"url"`
 }

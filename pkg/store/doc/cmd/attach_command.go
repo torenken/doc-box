@@ -22,30 +22,31 @@ type AttachCommand struct {
 	log *zap.SugaredLogger
 }
 
-func (a AttachCommand) Execute(ctx context.Context, attachment *domain.Attachment) error {
+func (a AttachCommand) Execute(ctx context.Context, attachment domain.Attachment) (domain.PreSignedUrl, error) {
 	a.log.Infof("Perform attachment processing with documentId %s.", attachment.DocId)
 
 	document, err := NewLoader(a.ddb, a.log).Load(ctx, attachment.DocId)
 	if err != nil {
 		a.log.Errorf("The document cannot be loaded: %s", err)
-		return ErrDocLoader
+		return domain.PreSignedUrl{}, ErrDocLoader
 	}
 
 	if (domain.Document{}) == document {
-		return ErrDocNotFound
+		return domain.PreSignedUrl{}, ErrDocNotFound
 	}
 	a.log.Infof("The document was successful loaded.")
 
-	if err := NewUploader(a.s3s, a.log).Upload(ctx, *attachment); err != nil {
+	if err := NewUploader(a.s3s, a.log).Upload(ctx, attachment); err != nil {
 		a.log.Errorf("The attachment cannot be uploaded: %s", err)
-		return ErrAttUpload
+		return domain.PreSignedUrl{}, ErrAttUpload
 	}
 	a.log.Infof("The upload of the attachment was successful.")
 
-	if err := NewPreSigner(a.s3p, a.log).PreSign(ctx, attachment); err != nil {
+	signedUrl, err := NewPreSigner(a.s3p, a.log).PreSign(ctx, attachment)
+	if err != nil {
 		a.log.Errorf("The presigned url of the attachment cannot be created: %s", err)
-		return ErrAttPreSign
+		return domain.PreSignedUrl{}, ErrAttPreSign
 	}
 
-	return nil
+	return signedUrl, nil
 }

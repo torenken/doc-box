@@ -18,14 +18,14 @@ func TestCreateCommand(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("error while saving document", func(t *testing.T) {
-		ddb := &MockDynamo{ErrPut: errors.New("expect Smithy http.Request value as input, got unsupported type")}
+		ddb := &MockDynamo{ErrPutItem: errors.New("expect Smithy http.Request value as input, got unsupported type")}
 		err := NewCreateCommand(ddb, logger).Execute(ctx, domain.Document{})
 		assert.Error(t, err)
 		assert.Equal(t, err, ErrDocCreate)
 	})
 
 	t.Run("successful saving document", func(t *testing.T) {
-		ddb := &MockDynamo{PutOut: &dynamodb.PutItemOutput{}}
+		ddb := &MockDynamo{PutItemOut: &dynamodb.PutItemOutput{}}
 		err := NewCreateCommand(ddb, logger).Execute(ctx, domain.Document{})
 		assert.NoError(t, err)
 	})
