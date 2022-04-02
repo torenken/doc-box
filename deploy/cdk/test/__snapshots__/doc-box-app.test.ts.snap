@@ -337,6 +337,146 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
+    "DevSecret61FBB390": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "GenerateSecretString": Object {
+          "ExcludePunctuation": true,
+          "GenerateStringKey": "api_key",
+          "PasswordLength": 64,
+          "SecretStringTemplate": "{\\"user\\":\\"test123456\\"}",
+        },
+        "KmsKeyId": Object {
+          "Fn::GetAtt": Array [
+            "DevSecretKeyADA6D507",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::SecretsManager::Secret",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DevSecretKeyADA6D507": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "KeyPolicy": Object {
+          "Statement": Array [
+            Object {
+              "Action": "kms:*",
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+              ],
+              "Condition": Object {
+                "StringEquals": Object {
+                  "kms:ViaService": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "secretsmanager.",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ".amazonaws.com",
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "kms:CreateGrant",
+                "kms:DescribeKey",
+              ],
+              "Condition": Object {
+                "StringEquals": Object {
+                  "kms:ViaService": Object {
+                    "Fn::Join": Array [
+                      "",
+                      Array [
+                        "secretsmanager.",
+                        Object {
+                          "Ref": "AWS::Region",
+                        },
+                        ".amazonaws.com",
+                      ],
+                    ],
+                  },
+                },
+              },
+              "Effect": "Allow",
+              "Principal": Object {
+                "AWS": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      "arn:",
+                      Object {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
+                      Object {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::KMS::Key",
+      "UpdateReplacePolicy": "Retain",
+    },
     "DocBoxAccessLogGroupD6642F36": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -367,6 +507,57 @@ Object {
       },
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
+    },
+    "DocumentCognitoUserPoolsAuthorizer720A0112": Object {
+      "Properties": Object {
+        "IdentitySource": "method.request.header.Authorization",
+        "Name": "DocBoxStackDocumentCognitoUserPoolsAuthorizer86B00695",
+        "ProviderARNs": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "DocumentUserPoolD7239797",
+              "Arn",
+            ],
+          },
+        ],
+        "RestApiId": Object {
+          "Ref": "DocumentRestApi6062B97A",
+        },
+        "Type": "COGNITO_USER_POOLS",
+      },
+      "Type": "AWS::ApiGateway::Authorizer",
+    },
+    "DocumentDevUsagePlan5160D2D8": Object {
+      "Properties": Object {
+        "ApiStages": Array [
+          Object {
+            "ApiId": Object {
+              "Ref": "DocumentRestApi6062B97A",
+            },
+            "Stage": Object {
+              "Ref": "DocumentRestApiDeploymentStageapiB0406D50",
+            },
+            "Throttle": Object {},
+          },
+        ],
+        "Throttle": Object {
+          "BurstLimit": 10,
+          "RateLimit": 5,
+        },
+      },
+      "Type": "AWS::ApiGateway::UsagePlan",
+    },
+    "DocumentDevUsagePlanUsagePlanKeyResourceDocBoxStackDocumentRestApiDevApiKey097B2421ADE0E345": Object {
+      "Properties": Object {
+        "KeyId": Object {
+          "Ref": "DocumentRestApiDevApiKey9DA53DBC",
+        },
+        "KeyType": "API_KEY",
+        "UsagePlanId": Object {
+          "Ref": "DocumentDevUsagePlan5160D2D8",
+        },
+      },
+      "Type": "AWS::ApiGateway::UsagePlanKey",
     },
     "DocumentRestApi6062B97A": Object {
       "Properties": Object {
@@ -427,7 +618,7 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "DocumentRestApiDeployment5C15C8B8711f929fa53b836d2d4aa57194d9b00d": Object {
+    "DocumentRestApiDeployment5C15C8B864e3941456de33b6202e32d292580844": Object {
       "DependsOn": Array [
         "DocumentRestApidocumentManagementdocumentdocIdattachmentPOST615DB99D",
         "DocumentRestApidocumentManagementdocumentdocIdattachmentFDAEFEFD",
@@ -459,7 +650,7 @@ Object {
           "Format": "{\\"requestId\\":\\"$context.requestId\\",\\"ip\\":\\"$context.identity.sourceIp\\",\\"user\\":\\"$context.identity.user\\",\\"caller\\":\\"$context.identity.caller\\",\\"requestTime\\":\\"$context.requestTime\\",\\"httpMethod\\":\\"$context.httpMethod\\",\\"resourcePath\\":\\"$context.resourcePath\\",\\"status\\":\\"$context.status\\",\\"protocol\\":\\"$context.protocol\\",\\"responseLength\\":\\"$context.responseLength\\"}",
         },
         "DeploymentId": Object {
-          "Ref": "DocumentRestApiDeployment5C15C8B8711f929fa53b836d2d4aa57194d9b00d",
+          "Ref": "DocumentRestApiDeployment5C15C8B864e3941456de33b6202e32d292580844",
         },
         "RestApiId": Object {
           "Ref": "DocumentRestApi6062B97A",
@@ -467,6 +658,34 @@ Object {
         "StageName": "api",
       },
       "Type": "AWS::ApiGateway::Stage",
+    },
+    "DocumentRestApiDevApiKey9DA53DBC": Object {
+      "Properties": Object {
+        "Enabled": true,
+        "StageKeys": Array [
+          Object {
+            "RestApiId": Object {
+              "Ref": "DocumentRestApi6062B97A",
+            },
+            "StageName": Object {
+              "Ref": "DocumentRestApiDeploymentStageapiB0406D50",
+            },
+          },
+        ],
+        "Value": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{{resolve:secretsmanager:",
+              Object {
+                "Ref": "DevSecret61FBB390",
+              },
+              ":SecretString:api_key::}}",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::ApiKey",
     },
     "DocumentRestApidocumentManagement575A3BF1": Object {
       "Properties": Object {
@@ -497,7 +716,14 @@ Object {
     },
     "DocumentRestApidocumentManagementdocumentPOSTAD0AE468": Object {
       "Properties": Object {
-        "AuthorizationType": "NONE",
+        "ApiKeyRequired": true,
+        "AuthorizationScopes": Array [
+          "subscriber/docbox",
+        ],
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": Object {
+          "Ref": "DocumentCognitoUserPoolsAuthorizer720A0112",
+        },
         "HttpMethod": "POST",
         "Integration": Object {
           "IntegrationHttpMethod": "POST",
@@ -639,7 +865,14 @@ Object {
     },
     "DocumentRestApidocumentManagementdocumentdocIdattachmentPOST615DB99D": Object {
       "Properties": Object {
-        "AuthorizationType": "NONE",
+        "ApiKeyRequired": true,
+        "AuthorizationScopes": Array [
+          "subscriber/attachbox",
+        ],
+        "AuthorizationType": "COGNITO_USER_POOLS",
+        "AuthorizerId": Object {
+          "Ref": "DocumentCognitoUserPoolsAuthorizer720A0112",
+        },
         "HttpMethod": "POST",
         "Integration": Object {
           "IntegrationHttpMethod": "POST",
@@ -777,6 +1010,105 @@ Object {
       },
       "Type": "AWS::DynamoDB::Table",
       "UpdateReplacePolicy": "Retain",
+    },
+    "DocumentUserPoolD7239797": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AccountRecoverySetting": Object {
+          "RecoveryMechanisms": Array [
+            Object {
+              "Name": "verified_phone_number",
+              "Priority": 1,
+            },
+            Object {
+              "Name": "verified_email",
+              "Priority": 2,
+            },
+          ],
+        },
+        "AdminCreateUserConfig": Object {
+          "AllowAdminCreateUserOnly": true,
+        },
+        "EmailVerificationMessage": "The verification code to your new account is {####}",
+        "EmailVerificationSubject": "Verify your new account",
+        "SmsVerificationMessage": "The verification code to your new account is {####}",
+        "VerificationMessageTemplate": Object {
+          "DefaultEmailOption": "CONFIRM_WITH_CODE",
+          "EmailMessage": "The verification code to your new account is {####}",
+          "EmailSubject": "Verify your new account",
+          "SmsMessage": "The verification code to your new account is {####}",
+        },
+      },
+      "Type": "AWS::Cognito::UserPool",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DocumentUserPoolDocumentClientFC18D5CC": Object {
+      "Properties": Object {
+        "AllowedOAuthFlows": Array [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "subscriber/docbox",
+        ],
+        "GenerateSecret": true,
+        "SupportedIdentityProviders": Array [
+          "COGNITO",
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
+    },
+    "DocumentUserPoolDocumentDomainEDA07E73": Object {
+      "Properties": Object {
+        "Domain": "docbox",
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolDomain",
+    },
+    "DocumentUserPoolDocumentResourceServer3852BE5A": Object {
+      "Properties": Object {
+        "Identifier": "subscriber",
+        "Name": "subscriber",
+        "Scopes": Array [
+          Object {
+            "ScopeDescription": "docbox-endpoint",
+            "ScopeName": "docbox",
+          },
+          Object {
+            "ScopeDescription": "attachbox-endpoint",
+            "ScopeName": "attachbox",
+          },
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolResourceServer",
+    },
+    "DocumentUserPoolPersonalClient003B778B": Object {
+      "Properties": Object {
+        "AllowedOAuthFlows": Array [
+          "client_credentials",
+        ],
+        "AllowedOAuthFlowsUserPoolClient": true,
+        "AllowedOAuthScopes": Array [
+          "subscriber/docbox",
+          "subscriber/attachbox",
+        ],
+        "GenerateSecret": true,
+        "SupportedIdentityProviders": Array [
+          "COGNITO",
+        ],
+        "UserPoolId": Object {
+          "Ref": "DocumentUserPoolD7239797",
+        },
+      },
+      "Type": "AWS::Cognito::UserPoolClient",
     },
     "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": Object {
       "DependsOn": Array [
