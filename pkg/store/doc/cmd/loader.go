@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"go.uber.org/zap"
 
+	"github.com/torenken/doc-box/pkg/store/doc/cmd/entity"
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
@@ -50,11 +51,16 @@ func (l Loader) Load(ctx context.Context, docId string) (domain.Document, error)
 		return domain.Document{}, ErrDocLoader
 	}
 
-	var document domain.Document
-	if err := attributevalue.UnmarshalMap(res.Item, &document); err != nil {
+	var doc entity.Document
+	if err := attributevalue.UnmarshalMap(res.Item, &doc); err != nil {
 		l.log.Errorf("The document with id %s can not be unmarshalled: %s", docId, err)
 		return domain.Document{}, ErrDocUnMarshal
 	}
+	document, err := entity.Decrypt(doc)
+	if err != nil {
+		l.log.Errorf("The document can not be decrypted: %s", err.Error())
+	}
+
 	l.log.Debugf("The document was loaded successfully: %+v", document)
 
 	return document, nil

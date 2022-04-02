@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"go.uber.org/zap"
 
+	"github.com/torenken/doc-box/pkg/store/doc/cmd/entity"
 	"github.com/torenken/doc-box/pkg/store/doc/domain"
 )
 
@@ -34,7 +35,13 @@ type Saver struct {
 func (s *Saver) Save(ctx context.Context, doc domain.Document) error {
 	s.log.Debugf("Save the document with the following parameter: %+v", doc)
 
-	item, err := attributevalue.MarshalMap(doc)
+	docEncrypt, err := entity.Encrypt(doc)
+	if err != nil {
+		s.log.Errorf("The document can not be encrypted: %s", err.Error())
+		//TODO
+	}
+
+	item, err := attributevalue.MarshalMap(docEncrypt)
 	if err != nil {
 		s.log.Errorf("The document can not be marshaled: %s", err.Error())
 		return ErrDocMarshal
