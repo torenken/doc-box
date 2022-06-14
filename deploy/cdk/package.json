@@ -58,7 +58,7 @@
   "dependencies": {
     "@aws-cdk/aws-lambda-go-alpha": "^2.19.0-alpha.0",
     "aws-cdk-lib": "^2.19.0",
-    "constructs": "^10.0.5"
+    "constructs": "^10.0.104"
   },
   "license": "MIT",
   "version": "0.0.0",
