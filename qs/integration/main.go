@@ -47,4 +47,6 @@ func main() {
 
 	bodyBytes, _ := ioutil.ReadAll(resp.Body)
 	logger.Printf("main: API-Calling : Client response: %v", string(bodyBytes))
+
+	logger.Printf("test")
 }
