@@ -46,5 +46,3 @@ Complete Build of Golang project via Makefile
 ```shell
 $ make
 ```
-
-.
