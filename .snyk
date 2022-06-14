@@ -1,8 +1,15 @@
-version: v1.19.0
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   SNYK-CC-AWS-417:
     - '*':
         reason: None Given
         expires: 2022-07-13T13:43:52.764Z
         created: 2022-06-13T13:43:52.768Z
+  SNYK-CC-TF-125:
+    - '*':
+        reason: None Given
+        expires: 2022-07-14T13:58:45.409Z
+        created: 2022-06-14T13:58:45.410Z
 patch: {}
