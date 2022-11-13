@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
-import { GoBaseFunc } from '../share';
+import { GoBaseFunc } from './go-base-func';
 
 export interface CreateDocumentFuncProps {
   readonly documentTable: ITable;

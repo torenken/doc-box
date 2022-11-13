@@ -56,3 +56,10 @@ integration-tests-with-cover:
 	@echo "running go integration test coverage in `pwd`"
 	$(GO_TEST) $(GO_TEST_OPT_WITH_INTEGRATION) $(ALL_BUSINESS_SRC_DIRS)
 	go tool cover -html=integration-coverage.txt -o integration-coverage.html
+
+.PHONY: execute-qs-check
+execute-qs-check: goimpi golint unit-tests-with-cover build syft-and-grype
+
+.PHONY: show-env
+show-env:
+	@echo "codebuild environment -> node version: `node --version`, yarn version: `yarn --version`, `go version`"

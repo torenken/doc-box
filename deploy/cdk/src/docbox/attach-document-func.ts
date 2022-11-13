@@ -2,7 +2,7 @@ import * as path from 'path';
 import { ITable } from 'aws-cdk-lib/aws-dynamodb';
 import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-import { GoBaseFunc } from '../share';
+import { GoBaseFunc } from './go-base-func';
 
 export interface AttachDocumentFuncProps {
   readonly documentBucket: IBucket;

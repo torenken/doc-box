@@ -1,5 +1,5 @@
 {
-  "name": "doc-box",
+  "name": "torenken-doc-box",
   "repository": {
     "type": "git",
     "url": "git@github.com:torenken/doc-box.git"
@@ -27,8 +27,7 @@
     "watch": "npx projen watch",
     "projen": "npx projen",
     "postinstall": "touch node_modules/go.mod",
-    "audit:level-high": "yarn audit --level high --groups dependencies; [[ $? -lt 7 ]] || exit 1",
-    "audit:dev-level-critical": "yarn audit --level critical --groups devDependencies; [[ $? -lt 16 ]] || exit 1"
+    "audit:level-high": "/bin/bash -c 'yarn audit; [[ $? -ge 8 ]] && exit 1 || exit 0'"
   },
   "author": {
     "name": "Thomas Renken",

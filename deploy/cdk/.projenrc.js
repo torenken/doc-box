@@ -1,22 +1,17 @@
 const { awscdk } = require('projen');
 
-const cdkVersion = '2.50.0';
 const appName = 'torenken-doc-box';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: cdkVersion,
+  cdkVersion: '2.50.0',
   defaultReleaseBranch: 'main',
   authorName: 'Thomas Renken',
   repository: 'git@github.com:torenken/doc-box.git',
-  name: 'doc-box',
+  name: appName,
 
   deps: [
     '@aws-cdk/aws-lambda-go-alpha',
   ],
-
-  jestOptions: {
-    jestVersion: '28',
-  },
 
   context: {
     //docBox
@@ -26,6 +21,10 @@ const project = new awscdk.AwsCdkTypeScriptApp({
   },
   appEntrypoint: 'doc-box-app.ts',
 
+  jestOptions: {
+    jestVersion: '28',
+  },
+
   //no-github-workflow
   github: false,
 
@@ -34,7 +33,6 @@ const project = new awscdk.AwsCdkTypeScriptApp({
 });
 
 project.setScript('postinstall', 'touch node_modules/go.mod'); //This step is necessary so that go mod tidy ignores the cdk-go deps.
-project.setScript('audit:level-high', 'yarn audit --level high --groups dependencies; [[ $? -lt 7 ]] || exit 1');
-project.setScript('audit:dev-level-critical', 'yarn audit --level critical --groups devDependencies; [[ $? -lt 16 ]] || exit 1');
+project.setScript('audit:level-high', '/bin/bash -c \'yarn audit; [[ $? -ge 8 ]] && exit 1 || exit 0\'');
 
 project.synth();

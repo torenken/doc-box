@@ -1,5 +1,8 @@
 #golang tools
 
+# Gopath
+GO_PATH := $(shell go env GOPATH)
+
 # Name of local package (see go.mod)
 LOCAL_IMPORT := github.com/torenken/doc-box
 
@@ -23,6 +26,11 @@ GO_FMT := gofmt
 GO_IMPORTS := goimports
 IMPI := impi
 LINT := golangci-lint
+LINT_VERSION := v1.50.1
+SYFT := syft
+SYFT_VERSION := v0.60.3
+GRYPE := grype
+GRYPE_VERSION := v0.52.0
 
 .DEFAULT_GOAL := common
 
@@ -42,7 +50,7 @@ gofmt:
 .PHONY: golint
 golint:
 	@echo "running $(LINT) in `pwd`"
-	$(LINT) run --verbose --allow-parallel-runners
+	$(GO_PATH)/bin/$(LINT) run --verbose --allow-parallel-runners
 
 .PHONY: golist-updates
 golist-updates:
@@ -57,8 +65,36 @@ gotidy:
 gotest:
 	$(GO_TEST) -v ./...
 
+.PHONY: syft-and-grype
+syft-and-grype:
+	@echo "running syft and grype to investigate vulnerabilities in your Golang dependencies"
+	$(GO_PATH)/bin/$(SYFT) packages dir:build -o spdx-json --file sbom.json
+	$(GO_PATH)/bin/$(GRYPE) sbom:./sbom.json --add-cpes-if-none
+
 .PHONY: install-tools
-install-tools:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.43.0
+install-tools: install-golangci-lint install-goimports install-impi install-syft install-grype
+
+.PHONY: install-golangci-lint
+install-golangci-lint:
+	@echo "installing golangci-lint $(LINT_VERSION)"
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin $(LINT_VERSION)
+
+.PHONY: install-syft
+install-syft:
+	@echo "installing syft $(SYFT_VERSION)"
+	curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b $(GO_PATH)/bin $(SYFT_VERSION)
+
+.PHONY: install-grype
+install-grype:
+	@echo "installing grype $(GRYPE_VERSION)"
+	curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b $(GO_PATH)/bin $(GRYPE_VERSION)
+
+.PHONY: install-goimports
+install-goimports:
+	@echo "installing goimports"
 	go install golang.org/x/tools/cmd/goimports@latest
+
+.PHONY: install-impi
+install-impi:
+	@echo "installing impi"
 	go install github.com/pavius/impi/cmd/impi@latest

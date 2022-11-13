@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -45,6 +45,6 @@ func main() {
 
 	logger.Printf("main: API-Calling : Client is calling the document api: url %v", createDocUrl)
 
-	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	bodyBytes, _ := io.ReadAll(resp.Body)
 	logger.Printf("main: API-Calling : Client response: %v", string(bodyBytes))
 }
