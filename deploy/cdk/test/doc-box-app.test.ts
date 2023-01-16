@@ -1,6 +1,6 @@
 import { Template } from 'aws-cdk-lib/assertions';
-import { DocBoxStack } from '../src/doc-box-stack';
 import { TestApp } from './cdk-test-helper';
+import { DocBoxStack } from '../src/doc-box-stack';
 
 
 test('DocBoxStackSnapshot', () => {

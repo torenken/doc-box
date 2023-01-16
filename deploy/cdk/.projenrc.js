@@ -3,7 +3,7 @@ const { awscdk } = require('projen');
 const appName = 'torenken-doc-box';
 
 const project = new awscdk.AwsCdkTypeScriptApp({
-  cdkVersion: '2.50.0',
+  cdkVersion: '2.60.0',
   defaultReleaseBranch: 'main',
   authorName: 'Thomas Renken',
   repository: 'git@github.com:torenken/doc-box.git',

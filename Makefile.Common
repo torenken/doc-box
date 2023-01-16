@@ -28,9 +28,9 @@ IMPI := impi
 LINT := golangci-lint
 LINT_VERSION := v1.50.1
 SYFT := syft
-SYFT_VERSION := v0.60.3
+SYFT_VERSION := v0.66.1
 GRYPE := grype
-GRYPE_VERSION := v0.52.0
+GRYPE_VERSION := v0.55.0
 
 .DEFAULT_GOAL := common
 
