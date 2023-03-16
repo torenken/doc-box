@@ -27,7 +27,10 @@
     "watch": "npx projen watch",
     "projen": "npx projen",
     "postinstall": "touch node_modules/go.mod",
-    "audit:level-high": "/bin/bash -c 'yarn audit; [[ $? -ge 8 ]] && exit 1 || exit 0'"
+    "audit:check": "yarn audit:level-high && yarn audit:level-critical",
+    "audit:level-high": "/bin/bash -c 'yarn audit --groups dependencies; [[ $? -ge 8 ]] && exit 1 || exit 0'",
+    "audit:level-critical": "/bin/bash -c 'yarn audit --groups devDependencies; [[ $? -ge 16 ]] && exit 1 || exit 0'",
+    "snyk:iac": "cd cdk.out && snyk iac test --policy-path=../.snyk --severity-threshold=high --report"
   },
   "author": {
     "name": "Thomas Renken",

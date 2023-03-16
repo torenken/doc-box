@@ -1,0 +1,19 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-CC-TF-125:
+    - 'DocBoxStack.template.json > Resources[DocumentTable9FE6D880] > Properties > PointInTimeRecoverySpecification > PointInTimeRecoveryEnabled':
+        reason: Test 1
+        created: 2023-03-15T20:08:34.028Z
+  SNYK-CC-TF-133:
+    - 'DocBoxStack.template.json > Resources[AttachDocumentFunc7255A71A] > Properties > TracingConfig > Mode':
+        reason: Test 2
+        created: 2023-03-16T09:04:47.493Z
+    - 'DocBoxStack.template.json > Resources[LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A] > Properties > TracingConfig > Mode':
+        reason: Test 3
+        created: 2023-03-16T09:04:53.226Z
+    - 'DocBoxStack.template.json > Resources[CreateDocumentFunc54FAC593] > Properties > TracingConfig > Mode':
+        reason: Test 4
+        created: 2023-03-16T09:05:01.200Z
+patch: {}
